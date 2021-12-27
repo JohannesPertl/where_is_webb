@@ -6,6 +6,9 @@
   <img src="docs/images/screenshot-notification.png" width="220">
 </p>
 
+## Install
+
+[Download latest release](https://github.com/JohannesPertl/where_is_webb/releases).
 
 ## Dependencies
 
