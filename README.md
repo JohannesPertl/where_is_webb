@@ -9,6 +9,13 @@
 ## Install
 
 [Download latest release](https://github.com/JohannesPertl/where_is_webb/releases).
+Play Store link will be added once the app has been reviewed.
+
+
+## How it works
+
+The app uses data from the [official NASA website](https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html) 
+to send a push notification as soon as a new deployment step has been reached.
 
 ## Dependencies
 
