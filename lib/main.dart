@@ -1,14 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'notification.dart';
 
 const String _nasaUrl =
     'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
+
+
+const String _twitterUrl = 'https://twitter.com/NASAWebb';
 
 const yellow = Color(0xFFFFCC00);
 const grey = Color(0xFF1D1D1D);
@@ -30,7 +33,6 @@ Future<dynamic> getCurrentDeploymentStep() async {
   HttpsCallable callable =
       FirebaseFunctions.instance.httpsCallable('getCurrentDeploymentStep');
   final result = await callable();
-  print(result.data['step_name']);
   return result.data;
 }
 
@@ -63,9 +65,62 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  String stepName = "";
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  String stepName = "Loading..";
   String stepDescription = "";
+
+  void showDeploymentStep() {
+    getCurrentDeploymentStep().then((dynamic result) {
+      setState(() {
+        stepName = result['step_name'];
+        String step = (result['step'] + 1).toString();
+        stepDescription = "Step $step of 28";
+      });
+    }).timeout(Duration(seconds: 10));
+  }
+
+  void showInfoSnackbar(int duration) {
+    final snackBar = SnackBar(
+      backgroundColor: yellow,
+      content: RichText(
+        text: TextSpan(
+          children: [
+            WidgetSpan(
+              child: FaIcon(FontAwesomeIcons.solidBell, size: 20),
+            ),
+            TextSpan(
+              text:
+                  " You will be notified as soon as a new step is reached",
+              style: TextStyle(
+                color: grey,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        textAlign: TextAlign.center,
+      ),
+      duration: Duration(seconds: duration),
+    );
+    Future.delayed(const Duration(seconds: 1), () {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      showDeploymentStep();
+      showInfoSnackbar(7);
+    }
+  }
 
   @override
   void initState() {
@@ -74,37 +129,12 @@ class _HomePageState extends State<HomePage> {
 
     firebaseMessaging.stepCtrl.stream.listen(_changeStep);
     firebaseMessaging.stepNameCtrl.stream.listen(_changeStepName);
-
-    getCurrentDeploymentStep().then((dynamic result) {
-      setState(() {
-        stepName = result['step_name'];
-        String step = (result['step'] + 1).toString();
-        stepDescription = "Step $step of 28";
-      });
-    });
+    showDeploymentStep();
 
     super.initState();
-    final snackBar = SnackBar(
-      backgroundColor: yellow,
-      content: Row(
-        children: [
-          Icon(CupertinoIcons.bell_solid, color: grey),
-          Text(
-            ' You will be notified about the next step',
-            style: TextStyle(
-              color: grey,
-              fontSize: 15.0,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-      duration: Duration(seconds: 20),
-    );
-    Future.delayed(const Duration(seconds: 1), () {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    });
+    WidgetsBinding.instance!.addObserver(this);
+
+    showInfoSnackbar(10);
   }
 
   _changeStep(String msg) => setState(() {
@@ -126,8 +156,7 @@ class _HomePageState extends State<HomePage> {
           action: SnackBarAction(
             textColor: grey,
             label: 'Close',
-            onPressed: () {
-            },
+            onPressed: () {},
           ),
           duration: Duration(days: 365),
         );
@@ -174,19 +203,66 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            ElevatedButton(
-              // Change color of button
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(pink),
-              ),
-              child: Text(
-                'More info',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              onPressed: () => _launchURL(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  // Change color of button
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(pink),
+                    minimumSize: MaterialStateProperty.all<Size>(
+                        Size(0, 45)),
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          child: FaIcon(FontAwesomeIcons.rocket, size: 20),
+                        ),
+                        TextSpan(
+                          text:
+                          " More info",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () => _launchURL(_nasaUrl),
+                ),
+                ElevatedButton(
+                  // Change color of button
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF1D9BF0)),
+                    minimumSize: MaterialStateProperty.all<Size>(
+                        Size(0, 45)),
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          child: FaIcon(FontAwesomeIcons.twitter, size: 20),
+                        ),
+                        TextSpan(
+                          text:
+                          " @NASAWebb",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () => _launchURL(_twitterUrl),
+                ),
+              ],
             ),
           ],
         ),
@@ -195,6 +271,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void _launchURL() async {
-  if (!await launch(_nasaUrl)) throw 'Could not launch $_nasaUrl';
+void _launchURL(url) async {
+  if (!await launch(url)) throw 'Could not launch $url';
 }
