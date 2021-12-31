@@ -8,9 +8,9 @@
 
 ## Install
 
-Download latest release [from here](https://github.com/JohannesPertl/where_is_webb/releases) and install it.
+Available on the [play store](https://play.google.com/store/apps/details?id=com.pertl.johannes.jwst_status).
 
-A Play Store link will be added once the app has been reviewed.
+You can also download the latest release [from here](https://github.com/JohannesPertl/where_is_webb/releases).
 
 
 ## How it works
