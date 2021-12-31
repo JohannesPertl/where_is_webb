@@ -8,7 +8,7 @@
 
 ## Install
 
-Download latest release [from here](https://github.com/JohannesPertl/where_is_webb/releases) and allow unknown sources on your android device.
+Download latest release [from here](https://github.com/JohannesPertl/where_is_webb/releases) and install it.
 
 A Play Store link will be added once the app has been reviewed.
 
