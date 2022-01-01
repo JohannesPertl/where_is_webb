@@ -7,10 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'notification.dart';
 
-const String _nasaUrl =
+const String _currentStepURL =
     'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
-
-
+const String _allStepsURL =
+    'https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html';
 const String _twitterUrl = 'https://twitter.com/NASAWebb';
 
 const yellow = Color(0xFFFFCC00);
@@ -31,8 +31,10 @@ Future init() async {
 
 Future<dynamic> getCurrentDeploymentStep() async {
   HttpsCallable callable =
-      FirebaseFunctions.instance.httpsCallable('getCurrentDeploymentStep');
+      FirebaseFunctions.instance.httpsCallable('getCurrentDeploymentStepDev');
   final result = await callable();
+  print(result.data);
+
   return result.data;
 }
 
@@ -89,8 +91,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               child: FaIcon(FontAwesomeIcons.solidBell, size: 20),
             ),
             TextSpan(
-              text:
-                  " You will be notified as soon as a new step is reached",
+              text: " You will be notified as soon as a new step is reached",
               style: TextStyle(
                 color: grey,
                 fontSize: 18.0,
@@ -210,8 +211,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   // Change color of button
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(pink),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                        Size(0, 45)),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
                   ),
                   child: RichText(
                     text: TextSpan(
@@ -220,8 +220,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           child: FaIcon(FontAwesomeIcons.rocket, size: 20),
                         ),
                         TextSpan(
-                          text:
-                          " More info",
+                          text: " More info",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -232,14 +231,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  onPressed: () => _launchURL(_nasaUrl),
+                  onPressed: () => _launchURL(_currentStepURL),
                 ),
                 ElevatedButton(
                   // Change color of button
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF1D9BF0)),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                        Size(0, 45)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Color(0xFF1D9BF0)),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
                   ),
                   child: RichText(
                     text: TextSpan(
@@ -248,8 +247,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           child: FaIcon(FontAwesomeIcons.twitter, size: 20),
                         ),
                         TextSpan(
-                          text:
-                          " @NASAWebb",
+                          text: " @NASAWebb",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
