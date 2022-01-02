@@ -4,19 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:video_player/video_player.dart';
 
 import 'notification.dart';
 
-const String _nasaUrl =
+const String _currentStepURL =
     'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
-
-
+const String _allStepsURL =
+    'https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html';
 const String _twitterUrl = 'https://twitter.com/NASAWebb';
 
 const yellow = Color(0xFFFFCC00);
 const grey = Color(0xFF1D1D1D);
+const background = Colors.black;
 const turquoise = Color(0xFF41EAD4);
 const pink = Color(0xFFFF206E);
+
+
+bool _isSnackbarActive = false ;
 
 void main() async {
   await init();
@@ -26,6 +31,7 @@ void main() async {
 Future init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
   await FirebaseMessaging.instance.subscribeToTopic('new_deployment_step');
 }
 
@@ -44,7 +50,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Where is Webb?',
       theme: new ThemeData(
-        scaffoldBackgroundColor: grey,
+        scaffoldBackgroundColor: background,
         primaryColor: yellow,
         textTheme: const TextTheme(
           headline2: TextStyle(
@@ -66,15 +72,41 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
   String stepName = "Loading..";
-  String stepDescription = "";
+  String stepNumber = "";
+  String stepOneliner = "";
+  String stepVideoURL = "";
+  String status = "";
 
   void showDeploymentStep() {
     getCurrentDeploymentStep().then((dynamic result) {
       setState(() {
         stepName = result['step_name'];
+        stepOneliner = result['oneliner'];
         String step = (result['step'] + 1).toString();
-        stepDescription = "Step $step of 28";
+        stepNumber = "Step $step of 28";
+        if (result['status'] == 'success') {
+          status = "SUCCESS";
+        } else {
+          status = "FAILURE";
+        }
+
+        if (result['video_local_url'] != null && result['video_local_url'] != stepVideoURL) {
+          stepVideoURL = result['video_local_url'];
+          _controller = VideoPlayerController.asset(
+            stepVideoURL,
+            videoPlayerOptions: VideoPlayerOptions(
+              mixWithOthers: true,
+            ),
+          );
+          _initializeVideoPlayerFuture = _controller.initialize();
+          _controller.setLooping(true);
+          _controller.setVolume(0.0);
+          _controller.play();
+        }
       });
     }).timeout(Duration(seconds: 10));
   }
@@ -86,14 +118,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         text: TextSpan(
           children: [
             WidgetSpan(
-              child: FaIcon(FontAwesomeIcons.solidBell, size: 20),
+              child: FaIcon(FontAwesomeIcons.solidBell, size: 17),
             ),
             TextSpan(
-              text:
-                  " You will be notified as soon as a new step is reached",
+              text: " You will be notified about the next deployment",
               style: TextStyle(
-                color: grey,
-                fontSize: 18.0,
+                color: background,
+                fontSize: 15.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -103,14 +134,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       ),
       duration: Duration(seconds: duration),
     );
-    Future.delayed(const Duration(seconds: 1), () {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    });
+    if (!_isSnackbarActive) {
+      _isSnackbarActive = true;
+      Future.delayed(const Duration(seconds: 1), () {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar)
+            .closed
+            .then((SnackBarClosedReason reason) {
+          _isSnackbarActive = false ;
+        });
+      });
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -118,7 +157,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       showDeploymentStep();
-      showInfoSnackbar(7);
+      showInfoSnackbar(5);
     }
   }
 
@@ -138,7 +177,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   _changeStep(String msg) => setState(() {
-        stepDescription = msg;
+        stepNumber = msg;
       });
 
   _changeStepName(String msg) => setState(() {
@@ -151,10 +190,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
-            // textAlign: TextAlign.center,
           ),
           action: SnackBarAction(
-            textColor: grey,
+            textColor: background,
             label: 'Close',
             onPressed: () {},
           ),
@@ -162,33 +200,39 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         );
 
         Future(() {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          _isSnackbarActive = true;
+          ScaffoldMessenger.of(context).showSnackBar(snackBar)
+              .closed
+              .then((SnackBarClosedReason reason) {
+            _isSnackbarActive = false ;
+          });
         });
       });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Where is Webb?',
+          style: TextStyle(
+              fontSize: 35.0, fontWeight: FontWeight.bold, color: yellow),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: background,
+        elevation: 0,
+        centerTitle: true,
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Flexible(
-              flex: 2,
-              child: Text(
-                'Where\nis\nWebb?',
-                style: TextStyle(
-                    fontSize: 72.0, fontWeight: FontWeight.bold, color: yellow),
-                textAlign: TextAlign.center,
-              ),
-            ),
             Column(
               children: [
                 Text(
-                  stepDescription,
-                  // "test",
+                  stepNumber,
                   style: TextStyle(
-                      fontSize: 20.0,
+                      fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                   textAlign: TextAlign.center,
@@ -196,12 +240,52 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 Text(
                   stepName,
                   style: TextStyle(
-                      fontSize: 30.0,
+                      fontSize: 22.0,
                       fontWeight: FontWeight.bold,
                       color: turquoise),
                   textAlign: TextAlign.center,
                 ),
               ],
+            ),
+            if (stepVideoURL != "")
+              FutureBuilder(
+                future: _initializeVideoPlayerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Flexible(
+                      flex: 2,
+                      child: AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Deployment status:  ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "$status",
+                    style: TextStyle(
+                      color: Colors.lightGreenAccent,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -210,8 +294,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   // Change color of button
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(pink),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                        Size(0, 45)),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
                   ),
                   child: RichText(
                     text: TextSpan(
@@ -220,8 +303,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           child: FaIcon(FontAwesomeIcons.rocket, size: 20),
                         ),
                         TextSpan(
-                          text:
-                          " More info",
+                          text: "  More info  ",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -232,24 +314,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  onPressed: () => _launchURL(_nasaUrl),
+                  onPressed: () => _launchURL(_currentStepURL),
                 ),
                 ElevatedButton(
                   // Change color of button
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF1D9BF0)),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                        Size(0, 45)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Color(0xFF1D9BF0)),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
                   ),
                   child: RichText(
                     text: TextSpan(
                       children: [
                         WidgetSpan(
-                          child: FaIcon(FontAwesomeIcons.twitter, size: 20),
+                          child: FaIcon(FontAwesomeIcons.twitter, size: 18),
                         ),
                         TextSpan(
-                          text:
-                          " @NASAWebb",
+                          text: " NASAWebb",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
