@@ -80,6 +80,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String stepOneliner = "";
   String stepVideoURL = "";
   String status = "";
+  String statusText = "";
 
   void showDeploymentStep() {
     getCurrentDeploymentStep().then((dynamic result) {
@@ -93,6 +94,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else {
           status = "FAILURE";
         }
+        statusText = "Deployment status:  ";
 
         if (result['video_local_url'] != null && result['video_local_url'] != stepVideoURL) {
           stepVideoURL = result['video_local_url'];
@@ -136,7 +138,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
     if (!_isSnackbarActive) {
       _isSnackbarActive = true;
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 3), () {
         ScaffoldMessenger.of(context).showSnackBar(snackBar)
             .closed
             .then((SnackBarClosedReason reason) {
@@ -270,7 +272,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: "Deployment status:  ",
+                    text: "$statusText",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
