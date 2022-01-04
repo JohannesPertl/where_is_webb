@@ -10,9 +10,6 @@
 
 Available on the [play store](https://play.google.com/store/apps/details?id=com.pertl.johannes.jwst_status).
 
-You can also download the latest release [from here](https://github.com/JohannesPertl/where_is_webb/releases).
-
-
 ## How it works
 
 The app uses data from the [official NASA website](https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html) 
