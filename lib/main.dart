@@ -35,7 +35,7 @@ Future init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-  await FirebaseMessaging.instance.subscribeToTopic('new_deployment_step_test');
+  await FirebaseMessaging.instance.subscribeToTopic('new_deployment_step');
 }
 
 Future<dynamic> getCurrentDeploymentStep() async {
