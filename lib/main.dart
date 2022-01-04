@@ -17,9 +17,12 @@ const String _twitterUrl = 'https://twitter.com/NASAWebb';
 const yellow = Color(0xFFFFCC00);
 const grey = Color(0xFF1D1D1D);
 const background = Colors.black;
-const turquoise = Color(0xFF41EAD4);
+const turquoise = Color(0xFF41DCEA);
 const pink = Color(0xFFFF206E);
-
+const lightPink = Color(0xFFF14D96);
+const blue = Color(0xFF0B3D91);
+const twitterBlue = Color(0xFF1D9BF0);
+const lighterBlue = Color(0xFF5AEFD4);
 
 bool _isSnackbarActive = false ;
 
@@ -32,7 +35,7 @@ Future init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-  await FirebaseMessaging.instance.subscribeToTopic('new_deployment_step');
+  await FirebaseMessaging.instance.subscribeToTopic('new_deployment_step_test');
 }
 
 Future<dynamic> getCurrentDeploymentStep() async {
@@ -89,12 +92,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         stepOneliner = result['oneliner'];
         String step = (result['step'] + 1).toString();
         stepNumber = "Step $step of 28";
-        if (result['status'] == 'success') {
-          status = "SUCCESS";
-        } else {
-          status = "FAILURE";
-        }
-        statusText = "Deployment status:  ";
+        status = result['new_status'].toUpperCase();
+        statusText = "Status:  ";
 
         if (result['video_local_url'] != null && result['video_local_url'] != stepVideoURL) {
           stepVideoURL = result['video_local_url'];
@@ -107,6 +106,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           _initializeVideoPlayerFuture = _controller.initialize();
           _controller.setLooping(true);
           _controller.setVolume(0.0);
+          _controller.setPlaybackSpeed(0.75);
           _controller.play();
         }
       });
@@ -185,11 +185,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   _changeStepName(String msg) => setState(() {
         stepName = msg;
         final snackBar = SnackBar(
-          backgroundColor: pink,
+          backgroundColor: yellow,
           content: Text(
             'A new step has just been reached:\n$stepName',
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   TextSpan(
                     text: "$status",
                     style: TextStyle(
-                      color: Colors.lightGreenAccent,
+                      color: yellow,
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                     ),
@@ -295,7 +295,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ElevatedButton(
                   // Change color of button
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(pink),
+                    backgroundColor: MaterialStateProperty.all<Color>(blue),
                     minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
                   ),
                   child: RichText(
@@ -305,7 +305,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           child: FaIcon(FontAwesomeIcons.rocket, size: 20),
                         ),
                         TextSpan(
-                          text: "  More info  ",
+                          text: "   More Info  ",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -322,7 +322,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   // Change color of button
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF1D9BF0)),
+                        MaterialStateProperty.all<Color>(twitterBlue),
                     minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
                   ),
                   child: RichText(
@@ -332,7 +332,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           child: FaIcon(FontAwesomeIcons.twitter, size: 18),
                         ),
                         TextSpan(
-                          text: " NASAWebb",
+                          text: " @NASAWebb",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
