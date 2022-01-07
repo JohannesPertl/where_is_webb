@@ -186,7 +186,7 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "oneliner": "This step begins the Secondary Mirror deployment phase.",
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_SMA_1_1280_30fps_h264.mp4",
         "video_local_url": "videos/16secondary_mirror_deployment.mp4",
-        "status": "complete"
+        "status": "in progress"
     }, {
         "index": 17,
         "name": "Secondary Mirror Deployment",
@@ -213,7 +213,7 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "oneliner": "This step begins the Primary Mirror deployment phase.",
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Pos_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/19port_primary_mirror_wing.mp4",
-        "status": "complete"
+        "status": "in progress",
     }, {
         "index": 20,
         "name": "Port Primary Mirror Wing",
@@ -231,7 +231,7 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "oneliner": "Begin deployment of the Starboard Primary Mirror Wing.",
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Neg_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/21starboard_primary_mirror_wing.mp4",
-        "status": "complete"
+        "status": "in progress"
     }, {
         "index": 22,
         "name": "Starboard Primary Mirror Wing",
@@ -310,7 +310,7 @@ async function sendNotification(newDeploymentStep) {
     const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
         notification: {
             title: deployment_step_list[newDeploymentStep]['name'],
-            body: "James Webb Space Telescope has completed the next deployment step!",
+            body: "James Webb Space Telescope has reached the next deployment step!",
             sound: "default"
         },
         data: {
