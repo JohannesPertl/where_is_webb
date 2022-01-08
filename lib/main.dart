@@ -24,7 +24,7 @@ const blue = Color(0xFF0B3D91);
 const twitterBlue = Color(0xFF1D9BF0);
 const lighterBlue = Color(0xFF5AEFD4);
 
-bool _isSnackbarActive = false ;
+bool _isSnackbarActive = false;
 
 void main() async {
   await init();
@@ -75,7 +75,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
   late Future<void> _initializeVideoPlayerFuture;
 
   String stepName = "Loading..";
@@ -84,6 +84,32 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String stepVideoURL = "";
   String status = "";
   String statusText = "";
+  String customLink = "";
+  String customLinkText = "";
+
+  void playVideo(String url) {
+    setState(() {
+      // Dispose controller if it is already initialized
+      if (_controller != null) {
+        _controller?.dispose();
+      }
+      if (url.isEmpty) {
+        _controller = null;
+        return;
+      }
+      _controller = VideoPlayerController.asset(
+        url,
+        videoPlayerOptions: VideoPlayerOptions(
+          mixWithOthers: true,
+        ),
+      );
+      _initializeVideoPlayerFuture = _controller!.initialize();
+      _controller?.setLooping(true);
+      _controller?.setVolume(0.0);
+      _controller?.setPlaybackSpeed(0.75);
+      _controller?.play();
+    });
+  }
 
   void showDeploymentStep() {
     getCurrentDeploymentStep().then((dynamic result) {
@@ -91,23 +117,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         stepName = result['step_name'];
         stepOneliner = result['oneliner'];
         String step = (result['step'] + 1).toString();
-        stepNumber = "Step $step of 28";
+        stepNumber = "Deployment $step of 28";
         status = result['new_status'].toUpperCase();
         statusText = "Status:  ";
 
-        if (result['video_local_url'] != null && result['video_local_url'] != stepVideoURL) {
+        if (result['video_local_url'] != null &&
+            result['video_local_url'] != stepVideoURL) {
           stepVideoURL = result['video_local_url'];
-          _controller = VideoPlayerController.asset(
-            stepVideoURL,
-            videoPlayerOptions: VideoPlayerOptions(
-              mixWithOthers: true,
-            ),
-          );
-          _initializeVideoPlayerFuture = _controller.initialize();
-          _controller.setLooping(true);
-          _controller.setVolume(0.0);
-          _controller.setPlaybackSpeed(0.75);
-          _controller.play();
+          playVideo(stepVideoURL);
+        }
+
+        if (result['custom_link'] != null) {
+          customLink = result['custom_link'];
+          customLinkText = result['custom_link_text'];
         }
       });
     }).timeout(Duration(seconds: 10));
@@ -123,7 +145,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               child: FaIcon(FontAwesomeIcons.solidBell, size: 17),
             ),
             TextSpan(
-              text: " You will be notified about the next deployment",
+              text: " You will be notified about future deployments and news.",
               style: TextStyle(
                 color: background,
                 fontSize: 15.0,
@@ -139,10 +161,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (!_isSnackbarActive) {
       _isSnackbarActive = true;
       Future.delayed(const Duration(seconds: 3), () {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar)
+        ScaffoldMessenger.of(context)
+            .showSnackBar(snackBar)
             .closed
             .then((SnackBarClosedReason reason) {
-          _isSnackbarActive = false ;
+          _isSnackbarActive = false;
         });
       });
     }
@@ -151,7 +174,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -159,7 +182,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       showDeploymentStep();
-      showInfoSnackbar(5);
+      showInfoSnackbar(7);
     }
   }
 
@@ -170,6 +193,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     firebaseMessaging.stepCtrl.stream.listen(_changeStep);
     firebaseMessaging.stepNameCtrl.stream.listen(_changeStepName);
+    firebaseMessaging.statusCtrl.stream.listen(_changeStatus);
+    firebaseMessaging.videoURLCtrl.stream.listen(_changeVideoURL);
+    firebaseMessaging.customLinkCtrl.stream.listen(_changeCustomLink);
+    firebaseMessaging.customLinkTextCtrl.stream.listen(_changeCustomLinkText);
+    firebaseMessaging.customNotificationCtrl.stream.listen(_triggerCustomNotification);
+
     showDeploymentStep();
 
     super.initState();
@@ -180,6 +209,24 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   _changeStep(String msg) => setState(() {
         stepNumber = msg;
+      });
+
+  _changeStatus(String msg) => setState(() {
+        status = msg;
+      });
+
+  _changeVideoURL(String msg) => setState(() {
+        stepVideoURL = msg;
+        playVideo(stepVideoURL);
+      });
+
+  _changeCustomLink(String msg) => setState(() {
+        customLink = msg;
+      });
+
+
+  _changeCustomLinkText(String msg) => setState(() {
+        customLinkText = msg;
       });
 
   _changeStepName(String msg) => setState(() {
@@ -203,10 +250,40 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
         Future(() {
           _isSnackbarActive = true;
-          ScaffoldMessenger.of(context).showSnackBar(snackBar)
+          ScaffoldMessenger.of(context)
+              .showSnackBar(snackBar)
               .closed
               .then((SnackBarClosedReason reason) {
-            _isSnackbarActive = false ;
+            _isSnackbarActive = false;
+          });
+        });
+      });
+
+  _triggerCustomNotification(String msg) => setState(() {
+        final snackBar = SnackBar(
+          backgroundColor: yellow,
+          content: Text(
+            '$msg',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          action: SnackBarAction(
+            textColor: Colors.black,
+            label: 'Close',
+            onPressed: () {},
+          ),
+          duration: Duration(days: 365),
+        );
+
+        Future(() {
+          _isSnackbarActive = true;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(snackBar)
+              .closed
+              .then((SnackBarClosedReason reason) {
+            _isSnackbarActive = false;
           });
         });
       });
@@ -242,7 +319,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 Text(
                   stepName,
                   style: TextStyle(
-                      fontSize: 22.0,
+                      fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                       color: turquoise),
                   textAlign: TextAlign.center,
@@ -257,8 +334,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     return Flexible(
                       flex: 2,
                       child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
+                        aspectRatio: _controller!.value.aspectRatio,
+                        child: VideoPlayer(_controller!),
                       ),
                     );
                   } else {
@@ -289,6 +366,33 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 ],
               ),
             ),
+            if (customLink != "")
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(yellow),
+                  minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
+                ),
+                onPressed: () => _launchURL(customLink),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      WidgetSpan(
+                        child: FaIcon(FontAwesomeIcons.infoCircle,
+                            size: 20, color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: " $customLinkText",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

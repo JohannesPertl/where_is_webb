@@ -231,7 +231,9 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "oneliner": "Begin deployment of the Starboard Primary Mirror Wing.",
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Neg_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/21starboard_primary_mirror_wing.mp4",
-        "status": "in progress"
+        "status": "in progress",
+        // "custom_link": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+        // "custom_link_text": "WATCH LIVE"
     }, {
         "index": 22,
         "name": "Starboard Primary Mirror Wing",
@@ -315,14 +317,16 @@ async function sendNotification(newDeploymentStep) {
         },
         data: {
             step: newDeploymentStep.toString(),
-            step_name: deployment_step_list[newDeploymentStep]['name'],
-//            description: deployment_step_list[newDeploymentStep]['description'],
-//            oneliner: deployment_step_list[newDeploymentStep]['oneliner'],
-//            event_datetime: deployment_step_list[newDeploymentStep]['event_datetime'],
-//            video_url: deployment_step_list[newDeploymentStep]['video_url'],
-//            video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'],
-//            status: "success",
-//            nextStepName: deployment_step_list[newDeploymentStep + 1]['name'],
+            step_name: deployment_step_list[newDeploymentStep]['name'] ??= "",
+            description: deployment_step_list[newDeploymentStep]['description'] ??= "",
+            oneliner: deployment_step_list[newDeploymentStep]['oneliner'] ??= "",
+            event_datetime: deployment_step_list[newDeploymentStep]['event_datetime'] ??= "",
+            video_url: deployment_step_list[newDeploymentStep]['video_url'] ??= "",
+            video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'] ??= "",
+            new_status: deployment_step_list[newDeploymentStep]['status'] ??= "",
+            next_step_name: deployment_step_list[newDeploymentStep + 1]['name'] ??= "",
+            custom_link: deployment_step_list[newDeploymentStep]['custom_link'] ??= "",
+            custom_link_text: deployment_step_list[newDeploymentStep]['custom_link_text'] ??= "",
 
             click_action: "FLUTTER_NOTIFICATION_CLICK"
         },
@@ -340,14 +344,16 @@ async function sendTestNotification(newDeploymentStep) {
         },
         data: {
             step: newDeploymentStep.toString(),
-            step_name: deployment_step_list[newDeploymentStep]['name'],
-            description: deployment_step_list[newDeploymentStep]['description'],
-            oneliner: deployment_step_list[newDeploymentStep]['oneliner'],
-            event_datetime: deployment_step_list[newDeploymentStep]['event_datetime'],
-            video_url: deployment_step_list[newDeploymentStep]['video_url'],
-            video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'],
-            status: "complete",
-            nextStepName: deployment_step_list[newDeploymentStep + 1]['name'],
+            step_name: deployment_step_list[newDeploymentStep]['name'] ??= "",
+            description: deployment_step_list[newDeploymentStep]['description'] ??= "",
+            oneliner: deployment_step_list[newDeploymentStep]['oneliner'] ??= "",
+            event_datetime: deployment_step_list[newDeploymentStep]['event_datetime'] ??= "",
+            video_url: deployment_step_list[newDeploymentStep]['video_url'] ??= "",
+            video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'] ??= "",
+            new_status: deployment_step_list[newDeploymentStep]['status'] ??= "",
+            next_step_name: deployment_step_list[newDeploymentStep + 1]['name'] ??= "",
+            custom_link: deployment_step_list[newDeploymentStep]['custom_link'] ??= "",
+            custom_link_text: deployment_step_list[newDeploymentStep]['custom_link_text'] ??= "",
 
             click_action: "FLUTTER_NOTIFICATION_CLICK"
         },
@@ -399,7 +405,9 @@ exports.getCurrentDeploymentStep = functions.https.onCall(async (data, context) 
         video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'],
         status: "success",
         new_status: deployment_step_list[newDeploymentStep]['status'],
-        nextStepName: deployment_step_list[newDeploymentStep + 1]['name'],
+        next_step_name: deployment_step_list[newDeploymentStep + 1]['name'],
+        custom_link: deployment_step_list[newDeploymentStep]['custom_link'],
+        custom_link_text: deployment_step_list[newDeploymentStep]['custom_link_text'],
     };
 });
 
