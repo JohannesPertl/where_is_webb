@@ -29,6 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  card_swiper : ^1.0.4
   video_player: ^2.2.10
   url_launcher: ^6.0.17
   firebase_core: ^1.1.0
