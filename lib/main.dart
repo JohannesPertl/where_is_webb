@@ -137,6 +137,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   void showInfoSnackbar(int duration) {
     final snackBar = SnackBar(
+      behavior: SnackBarBehavior.fixed,
       backgroundColor: yellow,
       content: RichText(
         text: TextSpan(
@@ -232,6 +233,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   _changeStepName(String msg) => setState(() {
         stepName = msg;
         final snackBar = SnackBar(
+          behavior: SnackBarBehavior.fixed,
           backgroundColor: yellow,
           content: Text(
             'A new step has just been reached:\n$stepName',
@@ -261,6 +263,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   _triggerCustomNotification(String msg) => setState(() {
         final snackBar = SnackBar(
+          behavior: SnackBarBehavior.fixed,
           backgroundColor: yellow,
           content: Text(
             '$msg',
