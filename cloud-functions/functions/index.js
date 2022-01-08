@@ -222,7 +222,7 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "oneliner": "Complete - the Port Primary Mirror Wing is deployed and latched.",
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Pos_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/19port_primary_mirror_wing.mp4",
-        "status": "complete"
+        "status": "complete",
     }, {
         "index": 21,
         "name": "Starboard Primary Mirror Wing",
@@ -232,8 +232,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Neg_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/21starboard_primary_mirror_wing.mp4",
         "status": "in progress",
-        // "custom_link": "https://www.youtube.com/watch?v=21X5lGlDOfg",
-        // "custom_link_text": "WATCH LIVE"
+         "custom_link": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+         "custom_link_text": "WATCH LIVE"
     }, {
         "index": 22,
         "name": "Starboard Primary Mirror Wing",
