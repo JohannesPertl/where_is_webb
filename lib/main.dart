@@ -125,7 +125,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      showInfoSnackbar(4);
       setState(() {
         deploymentSteps = _fetchAllDeploymentSteps();
       });
@@ -153,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
 
-    showInfoSnackbar(5);
+    showInfoSnackbar(6);
   }
 
   _changeStepIndex(int msg) => setState(() {
@@ -468,7 +467,7 @@ class _DeploymentStepDetailScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Deployment ${widget.deploymentStepIndex + 1}',
+          'Step ${widget.deploymentStepIndex + 1}',
           style: TextStyle(fontWeight: FontWeight.bold, color: yellow),
           textAlign: TextAlign.center,
         ),
@@ -601,39 +600,76 @@ class _DeploymentStepDetailScreenState
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: ElevatedButton(
-                  // Change color of button
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(blue),
-                    minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
-                  ),
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        WidgetSpan(
-                          child: FaIcon(FontAwesomeIcons.infoCircle, size: 20),
+                padding: const EdgeInsets.fromLTRB(0, 15, 0, 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      // Change color of button
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(twitterBlue),
+                        minimumSize:
+                            MaterialStateProperty.all<Size>(Size(0, 45)),
+                      ),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: FaIcon(FontAwesomeIcons.twitter, size: 18),
+                            ),
+                            TextSpan(
+                              text: " @NASAWebb",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                          text: " Learn more",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                        textAlign: TextAlign.center,
+                      ),
+                      onPressed: () {
+                        _launchURL(_twitterUrl);
+                      },
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  onPressed: () {
-                    if (widget.deploymentStepIndex ==
-                        widget.deploymentStep['current_index']) {
-                      _launchURL(_whereIsWebbURL);
-                    } else {
-                      _launchURL(widget.deploymentStep['info_url']);
-                    }
-                  },
+                    ElevatedButton(
+                      // Change color of button
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(blue),
+                        minimumSize:
+                            MaterialStateProperty.all<Size>(Size(0, 45)),
+                      ),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child:
+                                  FaIcon(FontAwesomeIcons.infoCircle, size: 18),
+                            ),
+                            TextSpan(
+                              text: " Learn more",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      onPressed: () {
+                        if (widget.deploymentStepIndex ==
+                            widget.deploymentStep['current_index']) {
+                          _launchURL(_whereIsWebbURL);
+                        } else {
+                          _launchURL(widget.deploymentStep['info_url']);
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
