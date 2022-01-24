@@ -273,8 +273,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Neg_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/21starboard_primary_mirror_wing.mp4",
         "status": "success",
-        "custom_link": "https://www.youtube.com/watch?v=21X5lGlDOfg",
-        "custom_link_text": "WATCH LIVE",
+//        "custom_link": "https://www.youtube.com/watch?v=21X5lGlDOfg",
+//        "custom_link_text": "WATCH LIVE",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/121.png",
         "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
@@ -349,13 +349,16 @@ The primary mirror segments and secondary mirror are moved by six actuators that
 
 The James Webb Space Telescope is launched on a direct path to an orbit around the second SunEarth Lagrange Point (L2), but it needs to make its own mid-course thrust correction maneuvers to get there. This is by design, because if Webb gets too much thrust from the Ariane rocket, it can’t turn around to thrust back toward Earth because that would directly expose its telescope optics and structure to the Sun, overheating them and aborting the science mission before it can even begin. Therefore, Webb gets an intentional slight under-burn from the Ariane and uses its own small thrusters and on-board propellant to make up the difference.
 
-There are three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and MCC-2. This final burn, MCC-2, which inserts Webb into its L2 halo orbit.`,
+There are three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and MCC-2. This final burn, MCC-2, inserts Webb into its L2 halo orbit.`,
         "oneliner": "Mid Course Correction Burn (MCC2) - Begins L2 Insertion.",
         "video_url": "",
         "video_local_url": "videos/26l2_insertion_burn.mp4",
         "status": "future",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/126.png",
-        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
+        "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/orbit/trajectoryMapping2.41-NoText-1800px.jpg",
+        "youtube_url": "",
+        "custom_link": "https://www.youtube.com/watch?v=pWklR2PBfQU",
+        "custom_link_text": "What's next?"
     },
     {
         "index": 28,
@@ -368,7 +371,9 @@ There are three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and MCC-2
         "video_local_url": "",
         "status": "future",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/127.png",
-        "youtube_url": "https://www.youtube.com/watch?v=6cUe4oMk69E"
+        "youtube_url": "https://www.youtube.com/watch?v=6cUe4oMk69E",
+        "custom_link": "https://www.youtube.com/watch?v=pWklR2PBfQU",
+        "custom_link_text": "What's next?"
     }
 ]
 
