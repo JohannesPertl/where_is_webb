@@ -1,3 +1,4 @@
+import 'package:card_swiper/card_swiper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,9 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'notification.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 const String _currentStepURL =
     'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
@@ -35,14 +37,7 @@ Future init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-  await FirebaseMessaging.instance.subscribeToTopic('new_deployment_step');
-}
-
-Future<dynamic> getCurrentDeploymentStep() async {
-  HttpsCallable callable =
-      FirebaseFunctions.instance.httpsCallable('getCurrentDeploymentStep');
-  final result = await callable();
-  return result.data;
+  await FirebaseMessaging.instance.subscribeToTopic('new_deployment_step_test');
 }
 
 class MyApp extends StatelessWidget {
@@ -62,78 +57,26 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomePage(),
+      home: HomeScreen(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  VideoPlayerController? _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  SwiperController? _swiperController;
 
-  String stepName = "Loading..";
-  String stepNumber = "";
-  String stepOneliner = "";
-  String stepVideoURL = "";
-  String status = "";
-  String statusText = "";
+  late Future<void> _initializeVideoPlayerFuture;
+  Future<List<dynamic>>? deploymentSteps;
+
   String customLink = "";
   String customLinkText = "";
-
-  void playVideo(String url) {
-    setState(() {
-      // Dispose controller if it is already initialized
-      if (_controller != null) {
-        _controller?.dispose();
-      }
-      if (url.isEmpty) {
-        _controller = null;
-        return;
-      }
-      _controller = VideoPlayerController.asset(
-        url,
-        videoPlayerOptions: VideoPlayerOptions(
-          mixWithOthers: true,
-        ),
-      );
-      _initializeVideoPlayerFuture = _controller!.initialize();
-      _controller?.setLooping(true);
-      _controller?.setVolume(0.0);
-      _controller?.setPlaybackSpeed(0.75);
-      _controller?.play();
-    });
-  }
-
-  void showDeploymentStep() {
-    getCurrentDeploymentStep().then((dynamic result) {
-      setState(() {
-        stepName = result['step_name'];
-        stepOneliner = result['oneliner'];
-        String step = (result['step'] + 1).toString();
-        stepNumber = "Deployment $step of 28";
-        status = result['new_status'].toUpperCase();
-        statusText = "Status:  ";
-
-        if (result['video_local_url'] != null &&
-            result['video_local_url'] != stepVideoURL) {
-          stepVideoURL = result['video_local_url'];
-          playVideo(stepVideoURL);
-        }
-
-        if (result['custom_link'] != null) {
-          customLink = result['custom_link'];
-          customLinkText = result['custom_link_text'];
-        }
-      });
-    }).timeout(Duration(seconds: 10));
-  }
 
   void showInfoSnackbar(int duration) {
     final snackBar = SnackBar(
@@ -146,7 +89,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               child: FaIcon(FontAwesomeIcons.solidBell, size: 17),
             ),
             TextSpan(
-              text: " You will be notified about future deployments and news.",
+              text: " You will be notified about major JWST updates.",
               style: TextStyle(
                 color: background,
                 fontSize: 15.0,
@@ -175,15 +118,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
-    _controller?.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      showDeploymentStep();
-      showInfoSnackbar(7);
+      showInfoSnackbar(4);
+      setState(() {
+        deploymentSteps = _fetchAllDeploymentSteps();
+      });
     }
   }
 
@@ -192,51 +136,43 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     final firebaseMessaging = FCM();
     firebaseMessaging.setNotifications();
 
-    firebaseMessaging.stepCtrl.stream.listen(_changeStep);
+    firebaseMessaging.stepIndexCtrl.stream.listen(_changeStepIndex);
     firebaseMessaging.stepNameCtrl.stream.listen(_changeStepName);
-    firebaseMessaging.statusCtrl.stream.listen(_changeStatus);
-    firebaseMessaging.videoURLCtrl.stream.listen(_changeVideoURL);
     firebaseMessaging.customLinkCtrl.stream.listen(_changeCustomLink);
     firebaseMessaging.customLinkTextCtrl.stream.listen(_changeCustomLinkText);
-    firebaseMessaging.customNotificationCtrl.stream.listen(_triggerCustomNotification);
+    firebaseMessaging.customNotificationCtrl.stream
+        .listen(_triggerCustomNotification);
 
-    showDeploymentStep();
+    _swiperController = new SwiperController();
+
+    setState(() {
+      deploymentSteps = _fetchAllDeploymentSteps();
+    });
 
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
 
-    showInfoSnackbar(10);
+    showInfoSnackbar(5);
   }
 
-  _changeStep(String msg) => setState(() {
-        stepNumber = msg;
-      });
-
-  _changeStatus(String msg) => setState(() {
-        status = msg;
-      });
-
-  _changeVideoURL(String msg) => setState(() {
-        stepVideoURL = msg;
-        playVideo(stepVideoURL);
+  _changeStepIndex(int msg) => setState(() {
+        deploymentSteps = _fetchAllDeploymentSteps();
       });
 
   _changeCustomLink(String msg) => setState(() {
         customLink = msg;
       });
 
-
   _changeCustomLinkText(String msg) => setState(() {
         customLinkText = msg;
       });
 
   _changeStepName(String msg) => setState(() {
-        stepName = msg;
         final snackBar = SnackBar(
           behavior: SnackBarBehavior.fixed,
           backgroundColor: yellow,
           content: Text(
-            'A new step has just been reached:\n$stepName',
+            'A new step has just been reached:\n$msg',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
@@ -291,6 +227,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         });
       });
 
+  Future<List> _fetchAllDeploymentSteps() async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('getAllDeploymentSteps');
+    final result = await callable();
+    return result.data;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -306,100 +249,298 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         centerTitle: true,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              children: [
-                Text(
-                  stepNumber,
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  stepName,
-                  style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: turquoise),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-            if (stepVideoURL != "")
-              FutureBuilder(
-                future: _initializeVideoPlayerFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Flexible(
-                      flex: 2,
-                      child: AspectRatio(
-                        aspectRatio: _controller!.value.aspectRatio,
-                        child: VideoPlayer(_controller!),
-                      ),
+        child: FutureBuilder(
+            future: deploymentSteps,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return Swiper(
+                  // scrollDirection: Axis.vertical,
+                  controller: _swiperController,
+                  index: snapshot.data[0]['current_index'],
+                  loop: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          children: [
+                            Hero(
+                              tag: snapshot.data[index]['name'],
+                              flightShuttleBuilder: flightShuttleBuilder,
+                              child: Text(
+                                snapshot.data[index]['name'],
+                                style: TextStyle(
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: turquoise),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                snapshot.data[index]['oneliner'],
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DeploymentStepDetailScreen(
+                                  deploymentStep: snapshot.data[index],
+                                  deploymentStepIndex: index,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Image(
+                            image: CachedNetworkImageProvider(
+                                snapshot.data[index]['image_url']),
+                          ),
+                        ),
+                        index == snapshot.data[0]['current_index']
+                            ? Text(
+                                "Current Step",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: yellow),
+                                textAlign: TextAlign.center,
+                              )
+                            : ElevatedButton(
+                                onPressed: () {
+                                  _swiperController
+                                      ?.move(snapshot.data[0]['current_index']);
+                                },
+                                child: FaIcon(FontAwesomeIcons.sync, size: 17),
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            yellow),
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.black),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                    ))),
+                              ),
+                      ],
                     );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
+                  },
+                  itemCount: snapshot.data.length,
+                  pagination: SwiperPagination(
+                      builder: FractionPaginationBuilder(color: yellow)),
+                  control: SwiperControl(),
+                );
+              }
+            }),
+      ),
+    );
+  }
+}
+
+void _launchURL(url) async {
+  if (!await launch(url)) throw 'Could not launch $url';
+}
+
+class DeploymentStepDetailScreen extends StatefulWidget {
+  const DeploymentStepDetailScreen(
+      {Key? key, required this.deploymentStep, this.deploymentStepIndex})
+      : super(key: key);
+
+  final deploymentStep;
+  final deploymentStepIndex;
+
+  @override
+  State<DeploymentStepDetailScreen> createState() =>
+      _DeploymentStepDetailScreenState();
+}
+
+class _DeploymentStepDetailScreenState
+    extends State<DeploymentStepDetailScreen> {
+  VideoPlayerController? _videoPlayerController;
+  YoutubePlayerController? _youtubePlayerController;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  @override
+  void initState() {
+    String videoURL = widget.deploymentStep['video_url'];
+    String youtubeURL = widget.deploymentStep['youtube_url'];
+
+    if (videoURL != "") {
+      setState(() {
+        _initializeVideoPlayerFuture = playVideo(videoURL, false);
+      });
+    } else if (youtubeURL != "") {
+      playYoutubeVideo(youtubeURL);
+    }
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (_videoPlayerController != null) {
+      _videoPlayerController!.dispose();
+    }
+    if (_youtubePlayerController != null) {
+      _youtubePlayerController!.close();
+    }
+    super.dispose();
+  }
+
+  playYoutubeVideo(String url) {
+    String? videoId = YoutubePlayerController.convertUrlToId(url);
+    _youtubePlayerController = YoutubePlayerController(
+      initialVideoId: videoId!,
+      params: YoutubePlayerParams(
+        showControls: true,
+        showFullscreenButton: true,
+        mute: false,
+        enableCaption: false,
+        showVideoAnnotations: false,
+        autoPlay: true,
+      ),
+    );
+  }
+
+  Future<void> playVideo(String url, bool local) {
+    // Dispose controller if it is already initialized
+    if (_videoPlayerController != null) {
+      print("dispose controller");
+      _videoPlayerController?.dispose();
+    }
+    if (local) {
+      _videoPlayerController = VideoPlayerController.asset(
+        url,
+        videoPlayerOptions: VideoPlayerOptions(
+          mixWithOthers: true,
+        ),
+      );
+    } else {
+      _videoPlayerController = VideoPlayerController.network(
+        url,
+        videoPlayerOptions: VideoPlayerOptions(
+          mixWithOthers: true,
+        ),
+      );
+    }
+
+    _initializeVideoPlayerFuture = _videoPlayerController!.initialize();
+    _videoPlayerController?.setLooping(true);
+    _videoPlayerController?.setVolume(0.0);
+    // _videoPlayerController?.setPlaybackSpeed(1);
+    _videoPlayerController?.play();
+
+    return _initializeVideoPlayerFuture;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Deployment ${widget.deploymentStepIndex + 1} of 29',
+          style: TextStyle(fontWeight: FontWeight.bold, color: yellow),
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: background,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Text(
+                '${widget.deploymentStep['name']}',
+                style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: turquoise),
+                textAlign: TextAlign.center,
               ),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "$statusText",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "$status",
-                    style: TextStyle(
-                      color: yellow,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (customLink != "")
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(yellow),
-                  minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
-                ),
-                onPressed: () => _launchURL(customLink),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
                 child: RichText(
                   text: TextSpan(
                     children: [
-                      WidgetSpan(
-                        child: FaIcon(FontAwesomeIcons.infoCircle,
-                            size: 20, color: Colors.black),
+                      TextSpan(
+                        text: "Status:  ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                       TextSpan(
-                        text: " $customLinkText",
+                        text:
+                            "${widget.deploymentStep['status'].toUpperCase()}",
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
+                          color: yellow,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
+              if (_youtubePlayerController != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: YoutubePlayerIFrame(
+                    controller: _youtubePlayerController,
+                    aspectRatio: 16 / 9,
+                  ),
+                ),
+              if (widget.deploymentStep['video_url'] != "")
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: FutureBuilder(
+                    future: _initializeVideoPlayerFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return AspectRatio(
+                          aspectRatio:
+                              _videoPlayerController!.value.aspectRatio,
+                          child: VideoPlayer(_videoPlayerController!),
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                child: Text(
+                  '${widget.deploymentStep['description']}',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: ElevatedButton(
                   // Change color of button
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(blue),
@@ -409,10 +550,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     text: TextSpan(
                       children: [
                         WidgetSpan(
-                          child: FaIcon(FontAwesomeIcons.rocket, size: 20),
+                          child: FaIcon(FontAwesomeIcons.infoCircle, size: 20),
                         ),
                         TextSpan(
-                          text: "   More Info  ",
+                          text: " Learn more",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -423,44 +564,28 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  onPressed: () => _launchURL(_currentStepURL),
+                  onPressed: () =>
+                      _launchURL(widget.deploymentStep['info_url']),
                 ),
-                ElevatedButton(
-                  // Change color of button
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(twitterBlue),
-                    minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
-                  ),
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        WidgetSpan(
-                          child: FaIcon(FontAwesomeIcons.twitter, size: 18),
-                        ),
-                        TextSpan(
-                          text: " @NASAWebb",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  onPressed: () => _launchURL(_twitterUrl),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-void _launchURL(url) async {
-  if (!await launch(url)) throw 'Could not launch $url';
+// Workaround to fix Hero bugging with Text
+Widget flightShuttleBuilder(
+  BuildContext flightContext,
+  Animation<double> animation,
+  HeroFlightDirection flightDirection,
+  BuildContext fromHeroContext,
+  BuildContext toHeroContext,
+) {
+  return DefaultTextStyle(
+    style: DefaultTextStyle.of(toHeroContext).style,
+    child: toHeroContext.widget,
+  );
 }
