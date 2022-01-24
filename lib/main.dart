@@ -9,8 +9,9 @@ import 'package:video_player/video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'notification.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:page_transition/page_transition.dart';
 
-const String _currentStepURL =
+const String _whereIsWebbURL =
     'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
 const String _allStepsURL =
     'https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html';
@@ -253,7 +254,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             future: deploymentSteps,
             builder: (context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(yellow),
+                  ),
+                );
               } else {
                 return Swiper(
                   // scrollDirection: Axis.vertical,
@@ -261,83 +266,93 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   index: snapshot.data[0]['current_index'],
                   loop: true,
                   itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: DeploymentStepDetailScreen(
+                                deploymentStep: snapshot.data[index],
+                                deploymentStepIndex: index),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Hero(
-                              tag: snapshot.data[index]['name'],
-                              flightShuttleBuilder: flightShuttleBuilder,
-                              child: Text(
-                                snapshot.data[index]['name'],
-                                style: TextStyle(
-                                    fontSize: 24.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: turquoise),
-                                textAlign: TextAlign.center,
+                            Column(
+                              children: [
+                                Hero(
+                                  tag: snapshot.data[index]['name'],
+                                  flightShuttleBuilder: flightShuttleBuilder,
+                                  child: Text(
+                                    snapshot.data[index]['name'],
+                                    style: TextStyle(
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: turquoise),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    snapshot.data[index]['oneliner'],
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Flexible(
+                              child: Image(
+                                image: CachedNetworkImageProvider(
+                                    snapshot.data[index]['image_url']),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                snapshot.data[index]['oneliner'],
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                            index == snapshot.data[0]['current_index']
+                                ? Flexible(
+                                    child: Text(
+                                      "Current Step",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: yellow),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )
+                                : Flexible(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        _swiperController?.move(
+                                            snapshot.data[0]['current_index']);
+                                      },
+                                      child: FaIcon(FontAwesomeIcons.sync,
+                                          size: 17),
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  yellow),
+                                          foregroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.black),
+                                          shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(50.0),
+                                          ))),
+                                    ),
+                                  ),
                           ],
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DeploymentStepDetailScreen(
-                                  deploymentStep: snapshot.data[index],
-                                  deploymentStepIndex: index,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Image(
-                            image: CachedNetworkImageProvider(
-                                snapshot.data[index]['image_url']),
-                          ),
-                        ),
-                        index == snapshot.data[0]['current_index']
-                            ? Text(
-                                "Current Step",
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: yellow),
-                                textAlign: TextAlign.center,
-                              )
-                            : ElevatedButton(
-                                onPressed: () {
-                                  _swiperController
-                                      ?.move(snapshot.data[0]['current_index']);
-                                },
-                                child: FaIcon(FontAwesomeIcons.sync, size: 17),
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            yellow),
-                                    foregroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.black),
-                                    shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                    ))),
-                              ),
-                      ],
+                      ),
                     );
                   },
                   itemCount: snapshot.data.length,
@@ -453,7 +468,7 @@ class _DeploymentStepDetailScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Deployment ${widget.deploymentStepIndex + 1} of 29',
+          'Deployment ${widget.deploymentStepIndex + 1}',
           style: TextStyle(fontWeight: FontWeight.bold, color: yellow),
           textAlign: TextAlign.center,
         ),
@@ -466,13 +481,17 @@ class _DeploymentStepDetailScreenState
           padding: EdgeInsets.all(20),
           child: Column(
             children: [
-              Text(
-                '${widget.deploymentStep['name']}',
-                style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: turquoise),
-                textAlign: TextAlign.center,
+              Hero(
+                tag: widget.deploymentStep['name'],
+                flightShuttleBuilder: flightShuttleBuilder,
+                child: Text(
+                  '${widget.deploymentStep['name']}',
+                  style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                      color: turquoise),
+                  textAlign: TextAlign.center,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -521,21 +540,64 @@ class _DeploymentStepDetailScreenState
                         );
                       } else {
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(yellow),
+                          ),
                         );
                       }
                     },
                   ),
+                ),
+              if (widget.deploymentStep['image_url2'] != "" &&
+                  widget.deploymentStep['image_url2'] != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: Image.network(
+                    widget.deploymentStep['image_url2'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              if (widget.deploymentStep['custom_link'] != "" &&
+                  widget.deploymentStep['custom_link'] != null)
+                ElevatedButton(
+                  // Change color of button
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(yellow),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(0, 45)),
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          child: FaIcon(FontAwesomeIcons.solidBell,
+                              size: 20, color: Colors.black),
+                        ),
+                        TextSpan(
+                          text: " ${widget.deploymentStep['custom_link_text']}",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () {
+                    _launchURL(widget.deploymentStep['custom_link']);
+                  },
                 ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                 child: Text(
                   '${widget.deploymentStep['description']}',
                   style: TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      wordSpacing: 1.5,
+                      height: 1.2),
                 ),
               ),
               Padding(
@@ -564,8 +626,14 @@ class _DeploymentStepDetailScreenState
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  onPressed: () =>
-                      _launchURL(widget.deploymentStep['info_url']),
+                  onPressed: () {
+                    if (widget.deploymentStepIndex ==
+                        widget.deploymentStep['current_index']) {
+                      _launchURL(_whereIsWebbURL);
+                    } else {
+                      _launchURL(widget.deploymentStep['info_url']);
+                    }
+                  },
                 ),
               ),
             ],
