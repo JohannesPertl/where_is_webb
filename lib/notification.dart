@@ -18,9 +18,7 @@ class FCM {
   final _firebaseMessaging = FirebaseMessaging.instance;
 
   final stepNameCtrl = StreamController<String>.broadcast();
-  final stepCtrl = StreamController<String>.broadcast();
-  final statusCtrl = StreamController<String>.broadcast();
-  final videoURLCtrl = StreamController<String>.broadcast();
+  final stepIndexCtrl = StreamController<int>.broadcast();
   final customLinkCtrl = StreamController<String>.broadcast();
   final customLinkTextCtrl = StreamController<String>.broadcast();
   final customNotificationCtrl = StreamController<String>.broadcast();
@@ -29,18 +27,11 @@ class FCM {
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
     FirebaseMessaging.onMessage.listen(
       (message) async {
-        print(message.notification?.title);
-
         // New deployment step
         if (message.data.containsKey('step')) {
-          String step = (int.parse(message.data['step']) + 1).toString();
-          stepCtrl.sink.add("Deployment $step of 28");
+          int step = int.parse(message.data['step']) + 1;
+          stepIndexCtrl.sink.add(step);
           stepNameCtrl.sink.add(message.data['step_name']);
-          statusCtrl.sink.add(message.data['new_status'].toUpperCase());
-          
-          if (message.data.containsKey('video_local_url')) {
-            videoURLCtrl.sink.add(message.data['video_local_url']);
-          }
         }
 
         // Custom link button
@@ -60,10 +51,8 @@ class FCM {
   }
 
   dispose() {
-    stepCtrl.close();
+    stepIndexCtrl.close();
     stepNameCtrl.close();
-    statusCtrl.close();
-    videoURLCtrl.close();
     customLinkCtrl.close();
     customLinkTextCtrl.close();
     customNotificationCtrl.close();
