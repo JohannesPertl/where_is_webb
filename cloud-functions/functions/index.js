@@ -14,13 +14,14 @@ const deployment_step_list = [
         "name": "Waiting For Launch",
         "event_datetime": launchDateTime.toISOString(),
         "description": `Webb is in Kourou French Guiana at the ESA Launch Facility. Webb has been placed on the Ariane 5 rocket in the tightly packed configuration shown and encapuslated in the nose fairing. For launch, Webb is rolled out to the launch pad and the countdown begins.
-        
-                        On its ~1000000 mile journey to L2, Webb will 'unfold' going through a number of deployments to reach its operational configuration.`,
+
+On its ~1000000 mile journey to L2, Webb will 'unfold' going through a number of deployments to reach its operational configuration.`,
         "oneliner": "Preparations for launch phase.",
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/100-1.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/100-1.png",
+        "youtube_url": "https://www.youtube.com/watch?v=uUAvXYW5bmI"
     },
     {
         "index": 1,
@@ -31,7 +32,8 @@ const deployment_step_list = [
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/101.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/101.png",
+        "youtube_url": "https://www.youtube.com/watch?v=9tXlqWldVVk"
     },
     {
         "index": 2,
@@ -43,7 +45,8 @@ const deployment_step_list = [
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/102.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/102.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     },
     {
         "index": 3,
@@ -54,7 +57,8 @@ const deployment_step_list = [
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Solar_Array_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/3solar_array.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/103.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/103.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     },
     {
         "index": 4,
@@ -70,7 +74,8 @@ There will be three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and M
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/104.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/104.png",
+        "youtube_url": ""
     }, {
         "index": 5,
         "name": "Gimbaled Antenna Assembly",
@@ -80,7 +85,8 @@ There will be three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and M
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_HGA_1280_30fps_h264.mp4",
         "video_local_url": "videos/5gimbaled_antenna_assembly.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/105.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/105.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     },
     {
         "index": 6,
@@ -95,7 +101,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/106.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/106.png",
+        "youtube_url": ""
     },
     {
         "index": 7,
@@ -106,7 +113,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_fwdPallet_1280_30fps_h264.mp4",
         "video_local_url": "videos/7forward_sunshield_pallet.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/107.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/107.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 8,
         "name": "Aft Sunshield Pallet",
@@ -116,7 +124,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_aftPallet_1280_30fps_h264.mp4",
         "video_local_url": "videos/8aft_sunshield_pallet.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/108.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/108.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     },
     {
         "index": 9,
@@ -127,7 +136,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Tower_1280_30fps_h264.mp4",
         "video_local_url": "videos/9dta_deployment.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/109.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/109.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     },
     {
         "index": 10,
@@ -138,7 +148,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_mFlap_1280_30fps_h264.mp4",
         "video_local_url": "videos/10aft_momentum_flap.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/110.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/110.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 11,
         "name": "Sunshield Covers Release",
@@ -148,7 +159,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_allCovers_1280_30fps_h264.mp4",
         "video_local_url": "videos/11sunshield_covers_release.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/111.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/111.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 12,
         "name": "Sunshield PORT Mid-Boom",
@@ -158,7 +170,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_JmBoom2_1280_30fps_h264.mp4",
         "video_local_url": "videos/12sunshield_port_mid_boom.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/112.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/112.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 13,
         "name": "Sunshield STARBOARD Mid-Boom",
@@ -168,7 +181,8 @@ The second, MCC-1b, is a shorter burn performed before the sunshield deployment 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_JmBoom2_1280_30fps_h264.mp4",
         "video_local_url": "videos/13sunshield_starboard_mid_boom.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/113.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/113.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 14,
         "name": "Sunshield Layer Tensioning",
@@ -180,7 +194,8 @@ After initial sunshield deployments of the forward and aft UPS (which carry the 
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_SS1_1280_30fps_h264.mp4",
         "video_local_url": "videos/14sunshield_layer_tensioning.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/114.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/114.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 15,
         "name": "Sunshield Tensioning Complete",
@@ -192,7 +207,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_SS1_1280_30fps_h264.mp4",
         "video_local_url": "videos/14sunshield_layer_tensioning.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/115.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/115.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 16,
         "name": "Secondary Mirror Deployment",
@@ -202,7 +218,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_SMA_1_1280_30fps_h264.mp4",
         "video_local_url": "videos/16secondary_mirror_deployment.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/116.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/116.png",
+        "youtube_url": "https://svs.gsfc.nasa.gov/vis/a010000/a013200/a013273/SMSDeployVideo.mp4"
     }, {
         "index": 17,
         "name": "Secondary Mirror Deployment",
@@ -212,7 +229,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_SMA_v3_1280_30fps_h264.mp4",
         "video_local_url": "videos/16secondary_mirror_deployment.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/117.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/117.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 18,
         "name": "Aft Deployed Instrument Radiator",
@@ -222,7 +240,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Aft_Radiator_Deployment_1280_h264.mp4",
         "video_local_url": "videos/18aft_deployed_instrument_radiator.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/118.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/118.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 19,
         "name": "Port Primary Mirror Wing",
@@ -232,7 +251,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Pos_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/19port_primary_mirror_wing.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/119.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/119.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 20,
         "name": "Port Primary Mirror Wing",
@@ -242,7 +262,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Pos_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/19port_primary_mirror_wing.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/120.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/120.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 21,
         "name": "Starboard Primary Mirror Wing",
@@ -254,7 +275,8 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "status": "success",
         "custom_link": "https://www.youtube.com/watch?v=21X5lGlDOfg",
         "custom_link_text": "WATCH LIVE",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/121.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/121.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     }, {
         "index": 22,
         "name": "Starboard Primary Mirror Wing",
@@ -264,17 +286,19 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_Neg_J2_Primary_Mirror_Wing_Deployment_1280_30fps_h264.mp4",
         "video_local_url": "videos/21starboard_primary_mirror_wing.mp4",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/122.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/122.png",
+        "youtube_url": "https://www.youtube.com/watch?v=IvwWb48E-k8&list=PLcy1hEnsejK1JKdJlg4HSZMvOkRgN9cd8"
     }, {
         "index": 23,
         "name": "WEBB IS FULLY DEPLOYED",
         "event_datetime": (launchDateTime.add(13, 'day')).toISOString(),
         "description": `It will continue to travel to the second Lagrange point (L2) for another two weeks, at which point it will enter a large orbit around the L2 point. The following five months will be used to cool the telescope to operating temperature, fine-tune the mirror alignment, and calibrate the instruments.`,
         "oneliner": "The largest, most complex telescope ever launched into space is fully deployed.",
-        "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/deploymentSteps/1k/WEBB_PMA_midShot_1280_30fps_h264.mp4",
+        "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/webbSpins/WEBB_TurnAround_AboveHorizon_1280p30.mp4",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/123Crop.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/123Crop.png",
+        "youtube_url": "https://www.youtube.com/watch?v=hET2MS1tIjA"
     }, {
         "index": 24,
         "name": "Individual Mirror Segment Movements",
@@ -286,32 +310,37 @@ The primary mirror segments and secondary mirror are moved by six actuators that
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/124.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/124.png",
+        "youtube_url": "https://www.youtube.com/watch?v=_2zQiWeXTg4"
     }, {
         "index": 25,
         "name": "Mirror Segment Deployment Tracker",
         "event_datetime": (launchDateTime.add(24, 'day')).toISOString(),
-        "description": `This completes the multi-day multi-step activity to activate and move each of its 18 primary mirror segments (which are adjustable) out of their launch configuration.
+        "description": `This completes the multi-day multi-step activity to activate and move each of the 18 primary mirror segments and the secondary mirror out of their launch configuration.
 
-The primary mirror segments and secondary mirror are moved by six actuators that are attached to the back of each mirror piece. The primary mirror segments also have an additional actuator at its center that adjusts its curvature. The telescope's tertiary mirror remains stationary.`,
-        "oneliner": "The mirror segments are calibrated by six actuators that are attached to the back of each mirror piece.",
+The primary mirror segments were driven 12.5 millimeters away from the telescope structure. Using six motors that deploy each segment approximately half the length of a paper clip, these actuators clear the mirrors from their launch restraints and give each segment enough space to later be adjusted in other directions to the optical starting position for the upcoming wavefront alignment process. The 18 radius of curvature (ROC) actuators were moved from their launch position as well. The ROC actuators individually shape the curvature of each beryllium mirror segment to set the initial parabolic shape of the primary mirror.
+
+Next up in the wavefront process will be moving mirrors in the micron and nanometer ranges to reach the final optical positions for an aligned telescope. The process of telescope alignment will take approximately three months.`,
+        "oneliner": "The adjacent image tracks the progress of the individual primary mirror segments (A,B,C) and the secondary (SM) mirror as they are aligned.",
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorMoves/mirrorAlignmentTracker-1-14-22-1000px.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorMoves/mirrorAlignmentTracker-1-19-22-1-1000px.png",
+        "youtube_url": "https://www.youtube.com/watch?v=_2zQiWeXTg4"
     },
     {
         "index": 26,
-        "name": "Individual Mirror Segment Movements",
+        "name": "Mirror Segment Deployments Completed",
         "event_datetime": (launchDateTime.add(24, 'day')).toISOString(),
         "description": `This completes the multi-day multi-step activity to activate and move each of its 18 primary mirror segments (which are adjustable) out of their launch configuration.
 
 The primary mirror segments and secondary mirror are moved by six actuators that are attached to the back of each mirror piece. The primary mirror segments also have an additional actuator at its center that adjusts its curvature. The telescope's tertiary mirror remains stationary.`,
-        "oneliner": "The mirror segments are calibrated by six actuators that are attached to the back of each mirror piece.",
+        "oneliner": "Complete - The mirror segments were successfully calibrated by six actuators that are attached to the back of each mirror piece.",
         "video_url": "",
         "video_local_url": "",
         "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/125.png"
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/125.png",
+        "youtube_url": "https://www.youtube.com/watch?v=_2zQiWeXTg4"
     }, {
         "index": 27,
         "name": "L2 Insertion Burn",
@@ -324,8 +353,9 @@ There are three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and MCC-2
         "oneliner": "Mid Course Correction Burn (MCC2) - Begins L2 Insertion.",
         "video_url": "",
         "video_local_url": "videos/26l2_insertion_burn.mp4",
-        "status": "in progress",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/126.png"
+        "status": "future",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/126.png",
+        "youtube_url": "https://www.youtube.com/watch?v=RzGLKQ7_KZQ"
     },
     {
         "index": 28,
@@ -334,10 +364,11 @@ There are three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and MCC-2
         "description": `Webb is now orbiting L2. Telescope deployment is complete. Ongoing cooldown and instrument turn-on continue. The telescope and scientific instruments started to cool rapidly in the shade of the sunshield once it was deployed, but it will take several weeks for them to cool all the way down and reach stable temperatures. This cooldown will be carefully controlled with strategically-placed electric heater strips. The remaining five months of commissioning will be all about aligning the optics and calibrating the scientific instruments.`,
         "oneliner": "Orbit Insertion Complete.\n" +
             "Webb is Orbiting L2 in a HALO Orbit.",
-        "video_url": "",
+        "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/webbSpins/WEBB_TurnAround_AboveHorizon_1280p30.mp4",
         "video_local_url": "",
-        "status": "success",
-        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/127.png"
+        "status": "future",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/127.png",
+        "youtube_url": ""
     }
 ]
 
@@ -451,11 +482,20 @@ exports.getCurrentDeploymentStep = functions.https.onCall(async (data, context) 
     };
 });
 
+exports.getCurrentDeploymentStepIndex = functions.https.onCall(async (data, context) => {
+    return await getNewDeploymentStep();
+});
+
 
 exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => {
     functions.logger.log("Getting all deployment steps");
+    let current_index = await getNewDeploymentStep();
     for (let i = 0; i < deployment_step_list.length; i++) {
-        deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + i + 1;
+        deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+        deployment_step_list[i]['current_index'] = current_index;
+    }
+    if (deployment_step_list[current_index]['status'] !== "success") {
+        deployment_step_list[current_index]['status'] = "in progress";
     }
     return deployment_step_list;
 });
