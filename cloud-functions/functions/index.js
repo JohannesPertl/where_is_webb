@@ -364,11 +364,11 @@ There are three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and MCC-2
         "description": `Webb is now orbiting L2. Telescope deployment is complete. Ongoing cooldown and instrument turn-on continue. The telescope and scientific instruments started to cool rapidly in the shade of the sunshield once it was deployed, but it will take several weeks for them to cool all the way down and reach stable temperatures. This cooldown will be carefully controlled with strategically-placed electric heater strips. The remaining five months of commissioning will be all about aligning the optics and calibrating the scientific instruments.`,
         "oneliner": "Orbit Insertion Complete.\n" +
             "Webb is Orbiting L2 in a HALO Orbit.",
-        "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/webbSpins/WEBB_TurnAround_AboveHorizon_1280p30.mp4",
+        "video_url": "",
         "video_local_url": "",
         "status": "future",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/127.png",
-        "youtube_url": ""
+        "youtube_url": "https://www.youtube.com/watch?v=6cUe4oMk69E"
     }
 ]
 
