@@ -303,9 +303,9 @@ Temperatures on the Sun/hot side of the sunshield will reach a maximum of approx
         "index": 24,
         "name": "Individual Mirror Segment Movements",
         "event_datetime": (launchDateTime.add(20, 'day')).toISOString(),
-        "description": `This operation is a multi-day multi-step activity to activate and move each of its 18 primary mirror segments (which are adjustable) out of their launch configuration.
+        "description": `The primary mirror wings are now fully deployed and latched into place, but the individual mirror segments remain in their launch configuration. This operation is a multi-day, multi-step activity to activate and move each of the 18 primary mirror segments and the secondary mirror from their stowed launch configuration to a deployed position ready for alignment.
 
-The primary mirror segments and secondary mirror are moved by six actuators that are attached to the back of each mirror piece. The primary mirror segments also have an additional actuator at its center that adjusts its curvature. The telescope's tertiary mirror remains stationary.`,
+The 18 primary mirror segments and secondary mirror are adjustable via six actuators that are attached to the back of each mirror. The primary mirror segments also have an additional actuator at its center that adjusts its curvature. The telescope's tertiary mirror remains stationary. The primary and secondary mirror segments will move a total of 12.5mm, in small increments, over the course of ~10 days to complete each segment's deployment.`,
         "oneliner": "The mirror segments are calibrated by six actuators that are attached to the back of each mirror piece.",
         "video_url": "",
         "video_local_url": "",
@@ -353,28 +353,219 @@ There are three mid-course correction (MCC) maneuvers: MCC-1a, MCC-1b, and MCC-2
         "oneliner": "Mid Course Correction Burn (MCC2) - Begins L2 Insertion.",
         "video_url": "",
         "video_local_url": "videos/26l2_insertion_burn.mp4",
-        "status": "future",
+        "status": "success",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/126.png",
         "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/orbit/trajectoryMapping2.41-NoText-1800px.jpg",
         "youtube_url": "",
-        "custom_link": "https://www.youtube.com/watch?v=pWklR2PBfQU",
-        "custom_link_text": "What's next?"
+        "custom_link": "",
+        "custom_link_text": ""
     },
     {
         "index": 28,
         "name": "WEBB IS ORBITING L2",
         "event_datetime": (launchDateTime.add(29.5, 'day')).toISOString(),
-        "description": `Webb is now orbiting L2. Telescope deployment is complete. Ongoing cooldown and instrument turn-on continue. The telescope and scientific instruments started to cool rapidly in the shade of the sunshield once it was deployed, but it will take several weeks for them to cool all the way down and reach stable temperatures. This cooldown will be carefully controlled with strategically-placed electric heater strips. The remaining five months of commissioning will be all about aligning the optics and calibrating the scientific instruments.`,
-        "oneliner": "Orbit Insertion Complete.\n" +
-            "Webb is Orbiting L2 in a HALO Orbit.",
+        "description": `Telescope deployment is complete. Webb is now orbiting L2. Ongoing cooldown and eventual instrument turn-on, testing and calibration occur. Telescope mirror alignment and calibration also begin as temperatures fall within range and instruments are enabled.
+
+The telescope and scientific instruments started to cool rapidly in the shade of the sunshield once it was deployed, but it will take several weeks for them to cool all the way down to stable operational temperatures. This cooldown will be carefully controlled with strategically-placed electric heater strips. The remaining five months of commissioning will be all about aligning the optics and calibrating the scientific instruments.`,
+        "oneliner": "Next Steps: Cooldown, Alignment, Calibration",
         "video_url": "",
         "video_local_url": "",
-        "status": "future",
+        "status": "success",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/deployment/1000pxWide/127.png",
         "youtube_url": "https://www.youtube.com/watch?v=6cUe4oMk69E",
         "custom_link": "https://www.youtube.com/watch?v=pWklR2PBfQU",
         "custom_link_text": "What's next?"
-    }
+    },
+
+
+    {
+        "index": 29,
+        "name": "NIRCam Cooling To Threshold",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `When NIRCam reaches 120 kelvins (approximately -244 degrees Fahrenheit, or -153 degrees Celsius), Webb’s optics team will be ready to begin meticulously moving the 18 primary mirror segments to form a single mirror surface. The team has selected the star HD 84406 as its target to begin this process. It will be the first object NIRCam “sees” when photons of light hit the instrument’s powered-on detectors. The process will essentially create an image of 18 random, blurry points of light. For the first few weeks of mirror alignment, the team will keep the instrument trained on the star while they make microscopic adjustments to the mirror segments; ultimately that collection of 18 blurry dots will become a focused image of a single star. Cooling of the telescope and instruments will also continue over the next month, with the near-infrared instruments ultimately reaching 37-39 kelvins.`,
+        "oneliner": "Mirror Alignment Process to Begin",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "success",
+        "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/webbTempLocationsGradient1.4NoLabels-600px.jpg",
+        "image_url2": "",
+        "youtube_url": "https://www.youtube.com/watch?v=s8fwNTM_11g",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/01/31/following-webbs-arrival-at-l2-telescope-commissioning-set-to-begin/",
+        "custom_link_text": "Blog: Commissioning"
+    },
+    {
+        "index": 30,
+        "name": "Mirror Alignment Process Steps",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `With deployment of the mirror segments now complete, and the instruments turned on, the team has begun the numerous steps required to prepare and calibrate the telescope to do its job. The telescope commissioning process will take much longer than previous space telescopes because Webb’s primary mirror consists of 18 individual mirror segments that need to work together as a single high-precision optical surface. The steps in the commissioning process include:
+
+1. Segment Image Identification
+2. Segment Alignment
+3. Image Stacking
+4. Coarse Phasing
+5. Fine Phasing
+6. Telescope Alignment
+7. Iterate Alignment for Final Correction`,
+        "oneliner": "The Seven Steps to Mirror Alignment",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "in progress",
+        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/alignment_mosaic_compressed-1024x694.png",
+        "image_url2": "",
+        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope/",
+        "custom_link_text": "Blog: Photons Incoming"
+    },
+    {
+        "index": 31,
+        "name": "Segment Image Identification",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `Webb team members saw the first photons of starlight that traveled through the entire telescope and were detected by the Near Infrared Camera (NIRCam) instrument. This milestone marks the first of many steps to capture images that are at first unfocused and use them to slowly fine-tune the telescope. This is the very beginning of the process as Segment Image Identification begins.
+
+We are pointing the telescope at a bright, isolated star (HD 84406) to capture a series of images that are then stitched together to form a picture of that part of the sky. We don’t have just one mirror looking at this star; we have 18 mirrors, each of which is initially tilted towards a different part of the sky. As a result, we’ll actually capture 18 slightly shifted copies of the star – each one out of focus and uniquely distorted. We refer to these initial star-copies as 'segment images.'
+
+One by one, we will move the 18 mirror segments to determine which segment creates which segment image. After matching the mirror segments to their respective images, we can tilt the mirrors to bring all the images near a common point for further analysis. We call this arrangement an 'image array.'`,
+        "oneliner": "Mirror Alignment Step 1 of 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "in progress",
+        "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/segmentIdPhaseStep1-1000px-trans.png",
+        "image_url2": "",
+        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/11/photons-received-webb-sees-its-first-star-18-times/",
+        "custom_link_text": "Blog: Photons Received"
+    },
+    {
+        "index": 32,
+        "name": "Segment Alignment",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `After we have the image array, we can perform Segment Alignment, which corrects most of the large positioning errors of the mirror segments.
+
+We begin by defocusing the segment images by moving the secondary mirror slightly. Mathematical analysis, called Phase Retrieval, is applied to the defocused images to determine the precise positioning errors of the segments. Adjustments of the segments then result in 18 well-corrected “telescopes.” However, the segments still don’t work together as a single mirror.`,
+        "oneliner": "Mirror Alignment Step 2 of 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "future",
+        "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/mirrorAlignStep2-1000px.jpg",
+        "image_url2": "",
+        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s&t=96s",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/11/photons-received-webb-sees-its-first-star-18-times/",
+        "custom_link_text": "Blog: Photons Received"
+    },
+    {
+        "index": 33,
+        "name": "Image Stacking",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `To put all of the light in a single place, each segment image must be stacked on top of one another. In the Image Stacking step, we move the individual segment images so that they fall precisely at the center of the field to produce one unified image. This process prepares the telescope for Coarse Phasing.
+
+The stacking is performed sequentially in three groups (A-segments, B-segments, and C-segments).`,
+        "oneliner": "Mirror Alignment Step 3 of 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "future",
+        "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/mirrorAlignStep3-1000px.jpg",
+        "image_url2": "",
+        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/11/photons-received-webb-sees-its-first-star-18-times/",
+        "custom_link_text": "Blog: Photons Received"
+    },
+    {
+        "index": 34,
+        "name": "Coarse Phasing",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `Although Image Stacking puts all the light in one place on the detector, the segments are still acting as 18 small telescopes rather than one big one. The segments need to be lined up with each other with an accuracy smaller than the wavelength of the light.
+
+Conducted three times during the commissioning process, Coarse Phasing measures and corrects the vertical displacement (piston difference) of the mirror segments. Using a technology known as Dispersed Fringe Sensing, we use NIRCam to capture light spectra from 20 separate pairings of mirror segments. The spectrum will resemble a barber pole pattern with a slope (or angle) determined by the piston difference of the two segments in the pairing.
+
+In this simulation image, the “Barber pole” patterns are created by the Disperse Fringe Sensor indicating a large piston error (top) or a small piston error (bottom).`,
+        "oneliner": "Mirror Alignment Step 4 of 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "future",
+        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-4-Sim-768x429.jpg",
+        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-4-Sim-768x429.jpg",
+        "youtube_url": "",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
+        "custom_link_text": "Blog: Photons Incoming"
+    },
+    {
+        "index": 35,
+        "name": "Fine Phasing",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `Fine Phasing is also conducted three times, directly after each round of Coarse Phasing, and then routinely throughout Webb’s lifespan. These operations measure and correct the remaining alignment errors using the same defocusing method applied during Segment Alignment. However, instead of using the secondary mirror, we use special optical elements inside the science instrument which introduce varying amounts of defocus for each image (-8, -4, +4, and +8 waves of defocus).
+        
+The images (top) show defocus introduced to an almost aligned telescope. The analysis (bottom) indicates the errors associated with each telescope segment. Segments with very bright or dark colors need larger corrections.`,
+        "oneliner": "Mirror Alignment Step 5 of 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "future",
+        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-5-Sim.jpg",
+        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-5-Sim.jpg",
+        "youtube_url": "",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
+        "custom_link_text": "Blog: Photons Incoming"
+    },
+    {
+        "index": 36,
+        "name": "Telescope Alignment Over Instrument Fields of View",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `After Fine Phasing, the telescope will be well aligned at one place in the NIRCam field of view. Now we need to extend the alignment to the rest of the instruments.
+
+In this phase of the commissioning process, we make measurements at multiple locations, or field points, across each of the science instruments, as shown below. More variation in intensity indicates larger errors at that field point. An algorithm calculates the final corrections needed to achieve a well-aligned telescope across all science instruments.
+
+The image shows the simulated analysis of the Field of View correction.`,
+        "oneliner": "Mirror Alignment Step 6 of 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "future",
+        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-6-Sim-768x306.jpg",
+        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-6-Sim-768x306.jpg",
+        "youtube_url": "",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
+        "custom_link_text": "Blog: Photons Incoming"
+    },
+    {
+        "index": 37,
+        "name": "Iterate Alignment for Final Correction",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `After applying the Field of View correction, the key thing left to address is the removal of any small, residual positioning errors in the primary mirror segments. We measure and make corrections using the Fine Phasing process. We will do a final check of the image quality across each of the science instruments; once this is verified, the wavefront sensing and controls process will be complete.
+
+As we go through the seven steps, we may find that we need to iterate earlier steps as well. The process is flexible and modular to allow for iteration. After roughly three months of aligning the telescope, we will be ready to proceed to commissioning the instruments.`,
+        "oneliner": "Mirror Alignment Step 7 of 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "future",
+        "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/primaryMirrorGrid-1000px.png",
+        "image_url2": "",
+        "youtube_url": "",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
+        "custom_link_text": "Blog: Photons Incoming"
+    },
+    {
+        "index": 38,
+        "name": "First science image",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `We expect the first science images from JWST to come back in late July. You will be notified as soon as the first image is available.
+
+Are you as excited as I am?`,
+        "oneliner": "Webb's first image. You will be notified when it is available.",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "future",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Question_mark.png",
+        "image_url2": "https://upload.wikimedia.org/wikipedia/commons/a/af/Question_mark.png",
+        "youtube_url": "",
+        "info_url": ""
+    },
 ]
 
 async function getNewDeploymentStep() {
@@ -388,7 +579,7 @@ async function sendNotification(newDeploymentStep) {
     const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
         notification: {
             title: deployment_step_list[newDeploymentStep]['name'],
-            body: "James Webb Space Telescope has reached the next deployment step!",
+            body: "James Webb Space Telescope has reached a new step!",
             sound: "default"
         },
         data: {
@@ -496,12 +687,31 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
     functions.logger.log("Getting all deployment steps");
     let current_index = await getNewDeploymentStep();
     for (let i = 0; i < deployment_step_list.length; i++) {
-        deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+        if (!deployment_step_list[i]['info_url']) {
+            deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+        }
         deployment_step_list[i]['current_index'] = current_index;
     }
     if (deployment_step_list[current_index]['status'] !== "success") {
         deployment_step_list[current_index]['status'] = "in progress";
     }
+    return deployment_step_list;
+});
+
+
+exports.getAllDeploymentStepsTest = functions.https.onCall(async (data, context) => {
+    let current_index = await getNewDeploymentStep();
+    for (let i = 0; i < deployment_step_list.length; i++) {
+        if (!deployment_step_list[i]['info_url']) {
+            deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+        }
+
+        deployment_step_list[i]['current_index'] = current_index;
+    }
+    if (deployment_step_list[current_index]['status'] !== "success") {
+        deployment_step_list[current_index]['status'] = "in progress";
+    }
+
     return deployment_step_list;
 });
 
