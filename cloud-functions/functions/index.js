@@ -1,12 +1,12 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const https = require('https')
 const axios = require('axios')
 const dayjs = require('dayjs')
 dayjs().format()
 admin.initializeApp();
 
 const launchDateTime = dayjs('2021-12-25T12:20Z')
+const whereIsWebbURL = 'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
 
 const deployment_step_list = [
     {
@@ -602,7 +602,6 @@ async function sendNotification(newDeploymentStep) {
 
 
 async function sendTestNotification(newDeploymentStep) {
-    // Send notification to all users
     const messageResponse = await admin.messaging().sendToTopic("new_deployment_step_test", {
         notification: {
             title: deployment_step_list[newDeploymentStep]['name'],
@@ -688,10 +687,15 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
     let current_index = await getNewDeploymentStep();
     for (let i = 0; i < deployment_step_list.length; i++) {
         if (!deployment_step_list[i]['info_url']) {
-            deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+            if (i === current_index) {
+                deployment_step_list[i]['info_url'] = whereIsWebbURL;
+            } else {
+                deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+            }
         }
         deployment_step_list[i]['current_index'] = current_index;
     }
+
     if (deployment_step_list[current_index]['status'] !== "success") {
         deployment_step_list[current_index]['status'] = "in progress";
     }
@@ -700,18 +704,22 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
 
 
 exports.getAllDeploymentStepsTest = functions.https.onCall(async (data, context) => {
+    functions.logger.log("TEST: Getting all deployment steps");
     let current_index = await getNewDeploymentStep();
     for (let i = 0; i < deployment_step_list.length; i++) {
         if (!deployment_step_list[i]['info_url']) {
-            deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+            if (i === current_index) {
+                deployment_step_list[i]['info_url'] = whereIsWebbURL;
+            } else {
+                deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+            }
         }
-
         deployment_step_list[i]['current_index'] = current_index;
     }
+
     if (deployment_step_list[current_index]['status'] !== "success") {
         deployment_step_list[current_index]['status'] = "in progress";
     }
-
     return deployment_step_list;
 });
 

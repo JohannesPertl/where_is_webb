@@ -661,12 +661,7 @@ class _DeploymentStepDetailScreenState
                         textAlign: TextAlign.center,
                       ),
                       onPressed: () {
-                        if (widget.deploymentStepIndex ==
-                            widget.deploymentStep['current_index']) {
-                          _launchURL(_whereIsWebbURL);
-                        } else {
-                          _launchURL(widget.deploymentStep['info_url']);
-                        }
+                        _launchURL(widget.deploymentStep['info_url']);
                       },
                     ),
                   ],
