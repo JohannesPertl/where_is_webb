@@ -430,13 +430,13 @@ One by one, we will move the 18 mirror segments to determine which segment creat
         "oneliner": "Mirror Alignment Step 1 of 7",
         "video_url": "",
         "video_local_url": "",
-        "status": "in progress",
+        "status": "success",
         "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/segmentIdPhaseStep1-1000px-trans.png",
         "image_url2": "",
         "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/11/photons-received-webb-sees-its-first-star-18-times/",
-        "custom_link_text": "Blog: Photons Received"
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/17/webbs-fine-guidance-sensor-is-guiding/",
+        "custom_link_text": "Blog: Fine Guidance Sensor"
     },
     {
         "index": 32,
@@ -448,13 +448,13 @@ We begin by defocusing the segment images by moving the secondary mirror slightl
         "oneliner": "Mirror Alignment Step 2 of 7",
         "video_url": "",
         "video_local_url": "",
-        "status": "future",
+        "status": "success",
         "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/mirrorAlignStep2-1000px.jpg",
         "image_url2": "",
         "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s&t=96s",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/11/photons-received-webb-sees-its-first-star-18-times/",
-        "custom_link_text": "Blog: Photons Received"
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/25/webb-mirror-alignment-continues-successfully/",
+        "custom_link_text": "Blog: Mirror Alignment Continues Successfully"
     },
     {
         "index": 33,
@@ -466,13 +466,13 @@ The stacking is performed sequentially in three groups (A-segments, B-segments, 
         "oneliner": "Mirror Alignment Step 3 of 7",
         "video_url": "",
         "video_local_url": "",
-        "status": "future",
+        "status": "success",
         "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/mirrorAlignStep3-1000px.jpg",
-        "image_url2": "",
-        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s",
+        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/PostImageStacking.jpeg",
+        "youtube_url": "",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/11/photons-received-webb-sees-its-first-star-18-times/",
-        "custom_link_text": "Blog: Photons Received"
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/25/webb-mirror-alignment-continues-successfully/",
+        "custom_link_text": "Blog: Mirror Alignment Continues Successfully"
     },
     {
         "index": 34,
@@ -481,36 +481,33 @@ The stacking is performed sequentially in three groups (A-segments, B-segments, 
         "description": `Although Image Stacking puts all the light in one place on the detector, the segments are still acting as 18 small telescopes rather than one big one. The segments need to be lined up with each other with an accuracy smaller than the wavelength of the light.
 
 Conducted three times during the commissioning process, Coarse Phasing measures and corrects the vertical displacement (piston difference) of the mirror segments. Using a technology known as Dispersed Fringe Sensing, we use NIRCam to capture light spectra from 20 separate pairings of mirror segments. The spectrum will resemble a barber pole pattern with a slope (or angle) determined by the piston difference of the two segments in the pairing.
-
-In this simulation image, the “Barber pole” patterns are created by the Disperse Fringe Sensor indicating a large piston error (top) or a small piston error (bottom).`,
+`,
         "oneliner": "Mirror Alignment Step 4 of 7",
-        "video_url": "",
+        "video_url": "https://svs.gsfc.nasa.gov/vis/a020000/a020300/a020358/WEBB_CoarsePhasing_4k_30fps_h264.mp4",
         "video_local_url": "",
-        "status": "future",
-        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-4-Sim-768x429.jpg",
-        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-4-Sim-768x429.jpg",
+        "status": "in progress",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/step4VideoGrab-1000px.jpg",
+        "image_url2": "",
         "youtube_url": "",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
-        "custom_link_text": "Blog: Photons Incoming"
+        "custom_link": "https://blogs.nasa.gov/webb/2022/02/25/webb-mirror-alignment-continues-successfully/",
+        "custom_link_text": "Blog: Mirror Alignment Continues Successfully"
     },
     {
         "index": 35,
         "name": "Fine Phasing",
         "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
-        "description": `Fine Phasing is also conducted three times, directly after each round of Coarse Phasing, and then routinely throughout Webb’s lifespan. These operations measure and correct the remaining alignment errors using the same defocusing method applied during Segment Alignment. However, instead of using the secondary mirror, we use special optical elements inside the science instrument which introduce varying amounts of defocus for each image (-8, -4, +4, and +8 waves of defocus).
-        
-The images (top) show defocus introduced to an almost aligned telescope. The analysis (bottom) indicates the errors associated with each telescope segment. Segments with very bright or dark colors need larger corrections.`,
+        "description": `Fine Phasing is also conducted three times, directly after each round of Coarse Phasing, and then routinely throughout Webb’s lifespan. These operations measure and correct the remaining alignment errors using the same defocusing method applied during Segment Alignment. However, instead of using the secondary mirror, we use special optical elements inside the science instrument which introduce varying amounts of defocus for each image (-8, -4, +4, and +8 waves of defocus).`,
         "oneliner": "Mirror Alignment Step 5 of 7",
-        "video_url": "",
+        "video_url": "https://svs.gsfc.nasa.gov/vis/a020000/a020300/a020358/WEBB_FinePhasing_4k_30fps_h264.mp4",
         "video_local_url": "",
         "status": "future",
-        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-5-Sim.jpg",
-        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-5-Sim.jpg",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/step5VideoGrab-1000px.jpg",
+        "image_url2": "",
         "youtube_url": "",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
-        "custom_link_text": "Blog: Photons Incoming"
+        "custom_link": "",
+        "custom_link_text": ""
     },
     {
         "index": 36,
@@ -529,8 +526,8 @@ The image shows the simulated analysis of the Field of View correction.`,
         "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-6-Sim-768x306.jpg",
         "youtube_url": "",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
-        "custom_link_text": "Blog: Photons Incoming"
+        "custom_link": "",
+        "custom_link_text": ""
     },
     {
         "index": 37,
@@ -547,8 +544,8 @@ As we go through the seven steps, we may find that we need to iterate earlier st
         "image_url2": "",
         "youtube_url": "",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope",
-        "custom_link_text": "Blog: Photons Incoming"
+        "custom_link": "",
+        "custom_link_text": ""
     },
     {
         "index": 38,
