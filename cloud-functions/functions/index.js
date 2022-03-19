@@ -411,12 +411,12 @@ The telescope and scientific instruments started to cool rapidly in the shade of
         "video_url": "",
         "video_local_url": "",
         "status": "in progress",
-        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/alignment_mosaic_compressed-1024x694.png",
+        "image_url": "https://pbs.twimg.com/media/FN-274yXMAEn9x_?format=jpg&name=4096x4096",
         "image_url2": "",
-        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s",
+        "youtube_url": "https://www.youtube.com/watch?v=MiGx8xv6xjE",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/03/photons-incoming-webb-team-begins-aligning-the-telescope/",
-        "custom_link_text": "Blog: Photons Incoming"
+        "custom_link": "https://blogs.nasa.gov/webb/",
+        "custom_link_text": "Blog: Latest news"
     },
     {
         "index": 31,
@@ -428,12 +428,12 @@ We are pointing the telescope at a bright, isolated star (HD 84406) to capture a
 
 One by one, we will move the 18 mirror segments to determine which segment creates which segment image. After matching the mirror segments to their respective images, we can tilt the mirrors to bring all the images near a common point for further analysis. We call this arrangement an 'image array.'`,
         "oneliner": "Mirror Alignment Step 1 of 7",
-        "video_url": "",
+        "video_url": "https://svs.gsfc.nasa.gov/vis/a020000/a020300/a020358/WEBB_SegmentImageID_HD_30fps.mp4",
         "video_local_url": "",
         "status": "success",
         "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/segmentIdPhaseStep1-1000px-trans.png",
         "image_url2": "",
-        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s",
+        "youtube_url": "",
         "info_url": "",
         "custom_link": "https://blogs.nasa.gov/webb/2022/02/17/webbs-fine-guidance-sensor-is-guiding/",
         "custom_link_text": "Blog: Fine Guidance Sensor"
@@ -446,12 +446,12 @@ One by one, we will move the 18 mirror segments to determine which segment creat
 
 We begin by defocusing the segment images by moving the secondary mirror slightly. Mathematical analysis, called Phase Retrieval, is applied to the defocused images to determine the precise positioning errors of the segments. Adjustments of the segments then result in 18 well-corrected “telescopes.” However, the segments still don’t work together as a single mirror.`,
         "oneliner": "Mirror Alignment Step 2 of 7",
-        "video_url": "",
+        "video_url": "https://svs.gsfc.nasa.gov/vis/a020000/a020300/a020358/WEBB_SegmentAlignment_HD_30fps.mp4",
         "video_local_url": "",
         "status": "success",
         "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/mirrorAlignStep2-1000px.jpg",
         "image_url2": "",
-        "youtube_url": "https://www.youtube.com/watch?v=QlwatKpla8s&t=96s",
+        "youtube_url": "",
         "info_url": "",
         "custom_link": "https://blogs.nasa.gov/webb/2022/02/25/webb-mirror-alignment-continues-successfully/",
         "custom_link_text": "Blog: Mirror Alignment Continues Successfully"
@@ -464,11 +464,11 @@ We begin by defocusing the segment images by moving the secondary mirror slightl
 
 The stacking is performed sequentially in three groups (A-segments, B-segments, and C-segments).`,
         "oneliner": "Mirror Alignment Step 3 of 7",
-        "video_url": "",
+        "video_url": "https://svs.gsfc.nasa.gov/vis/a020000/a020300/a020358/WEBB_ImageStacking_HD_30fps.mp4",
         "video_local_url": "",
         "status": "success",
         "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/mirrorAlignStep3-1000px.jpg",
-        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/PostImageStacking.jpeg",
+        "image_url2": "",
         "youtube_url": "",
         "info_url": "",
         "custom_link": "https://blogs.nasa.gov/webb/2022/02/25/webb-mirror-alignment-continues-successfully/",
@@ -485,13 +485,13 @@ Conducted three times during the commissioning process, Coarse Phasing measures 
         "oneliner": "Mirror Alignment Step 4 of 7",
         "video_url": "https://svs.gsfc.nasa.gov/vis/a020000/a020300/a020358/WEBB_CoarsePhasing_4k_30fps_h264.mp4",
         "video_local_url": "",
-        "status": "in progress",
+        "status": "success",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/step4VideoGrab-1000px.jpg",
         "image_url2": "",
         "youtube_url": "",
         "info_url": "",
-        "custom_link": "https://blogs.nasa.gov/webb/2022/02/25/webb-mirror-alignment-continues-successfully/",
-        "custom_link_text": "Blog: Mirror Alignment Continues Successfully"
+        "custom_link": "https://blogs.nasa.gov/webb/2022/03/10/webb-will-use-spectroscopy-to-study-composition-of-distant-galaxies/",
+        "custom_link_text": "Blog: Composition of Distant Galaxies"
     },
     {
         "index": 35,
@@ -501,7 +501,7 @@ Conducted three times during the commissioning process, Coarse Phasing measures 
         "oneliner": "Mirror Alignment Step 5 of 7",
         "video_url": "https://svs.gsfc.nasa.gov/vis/a020000/a020300/a020358/WEBB_FinePhasing_4k_30fps_h264.mp4",
         "video_local_url": "",
-        "status": "future",
+        "status": "success",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/step5VideoGrab-1000px.jpg",
         "image_url2": "",
         "youtube_url": "",
@@ -515,19 +515,18 @@ Conducted three times during the commissioning process, Coarse Phasing measures 
         "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
         "description": `After Fine Phasing, the telescope will be well aligned at one place in the NIRCam field of view. Now we need to extend the alignment to the rest of the instruments.
 
-In this phase of the commissioning process, we make measurements at multiple locations, or field points, across each of the science instruments, as shown below. More variation in intensity indicates larger errors at that field point. An algorithm calculates the final corrections needed to achieve a well-aligned telescope across all science instruments.
-
-The image shows the simulated analysis of the Field of View correction.`,
+In this phase of the commissioning process, we make measurements at multiple locations, or field points, across each of the science instruments, as shown above. More variation in intensity indicates larger errors at that field point. An algorithm calculates the final corrections needed to achieve a well-aligned telescope across all science instruments.
+`,
         "oneliner": "Mirror Alignment Step 6 of 7",
-        "video_url": "",
+        "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/mirrorAlignment/step6-1k.mp4",
         "video_local_url": "",
-        "status": "future",
-        "image_url": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-6-Sim-768x306.jpg",
-        "image_url2": "https://blogs.nasa.gov/webb/wp-content/uploads/sites/326/2022/02/Step-6-Sim-768x306.jpg",
+        "status": "in progress",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/step6.jpg",
+        "image_url2": "",
         "youtube_url": "",
         "info_url": "",
-        "custom_link": "",
-        "custom_link_text": ""
+        "custom_link": "https://www.youtube.com/watch?v=MiGx8xv6xjE",
+        "custom_link_text": "Video: NASA’s Webb Reaches Alignment Milestone"
     },
     {
         "index": 37,
@@ -540,12 +539,12 @@ As we go through the seven steps, we may find that we need to iterate earlier st
         "video_url": "",
         "video_local_url": "",
         "status": "future",
-        "image_url": "https://jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/primaryMirrorGrid-1000px.png",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/50489833002_654cbd9bde_b-1kpix-transCrop-png32.png",
         "image_url2": "",
         "youtube_url": "",
         "info_url": "",
-        "custom_link": "",
-        "custom_link_text": ""
+        "custom_link": "https://svs.gsfc.nasa.gov/20358",
+        "custom_link_text": "All mirror alignment animations"
     },
     {
         "index": 38,
