@@ -8,7 +8,7 @@ admin.initializeApp();
 const launchDateTime = dayjs('2021-12-25T12:20Z')
 const whereIsWebbURL = 'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
 
-const deployment_step_list = [
+const deploymentStepList = [
     {
         "index": 0,
         "name": "Waiting For Launch",
@@ -520,7 +520,7 @@ In this phase of the commissioning process, we make measurements at multiple loc
         "oneliner": "Mirror Alignment Step 6 of 7",
         "video_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/video/mirrorAlignment/step6-1k.mp4",
         "video_local_url": "",
-        "status": "in progress",
+        "status": "success",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/step6.jpg",
         "image_url2": "",
         "youtube_url": "",
@@ -530,6 +530,27 @@ In this phase of the commissioning process, we make measurements at multiple loc
     },
     {
         "index": 37,
+        "name": "Final Cooling - MIRI",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `Webb’s MIRI is in the final phase of its cooldown which is a precondition to mirror alignment step 7.
+
+The Mid-Infrared Instrument (MIRI) carries detectors that need to be at a temperature of less than 7 kelvin to operate properly. This temperature is not possible on Webb by passive means alone, so Webb carries an innovative cryocooler that is dedicated to cooling MIRI's detectors.
+
+This cryocooler uses helium gas to carry heat from MIRI’s optics and detectors out to the warm side of the sunshield. To manage the cooldown process, MIRI also has heaters onboard, to protect its sensitive components from the risk of ice forming. The Webb team has begun progressively adjusting both the cryocooler and these heaters, to ensure a slow, controlled, stable cooldown for the instrument. Soon, the team will turn off MIRI’s heaters entirely, to bring the instrument down to its operating temperature of less than 7 kelvins (-447 degrees Fahrenheit, or -266 degrees Celsius).
+`,
+        "oneliner": "Precedes Mirror Alignment Step 7",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "success",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/segmentIdPhaseIcon7aFinalCoolDown.png",
+        "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/miriFinalCooldown-1200px.png",
+        "youtube_url": "",
+        "info_url": "",
+        "custom_link": "https://www.jpl.nasa.gov/news/webb-telescopes-coldest-instrument-reaches-operating-temperature",
+        "custom_link_text": "Webb Reaches Operating Temperature"
+    },
+    {
+        "index": 38,
         "name": "Iterate Alignment for Final Correction",
         "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
         "description": `After applying the Field of View correction, the key thing left to address is the removal of any small, residual positioning errors in the primary mirror segments. We measure and make corrections using the Fine Phasing process. We will do a final check of the image quality across each of the science instruments; once this is verified, the wavefront sensing and controls process will be complete.
@@ -538,16 +559,35 @@ As we go through the seven steps, we may find that we need to iterate earlier st
         "oneliner": "Mirror Alignment Step 7 of 7",
         "video_url": "",
         "video_local_url": "",
-        "status": "future",
+        "status": "success",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/50489833002_654cbd9bde_b-1kpix-transCrop-png32.png",
-        "image_url2": "",
+        "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/mirrorAlignmentCompleteFullFieldImage-1400px.jpg",
         "youtube_url": "",
         "info_url": "",
         "custom_link": "https://svs.gsfc.nasa.gov/20358",
         "custom_link_text": "All mirror alignment animations"
     },
     {
-        "index": 38,
+        "index": 39,
+        "name": "Instrument Commissioning",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `With mirror alignment completed, the Webb team will turn its attention to science instrument commissioning.
+
+For each instrument, the Webb team will now conduct an extensive suite of calibrations and characterizations of the instruments using a variety of astronomical sources. We will measure the instruments’ throughput – how much of the light that enters the telescope reaches the detectors and is recorded. We will do an astrometric calibration for each instrument, measuring the small optical distortions in the instrument to map each pixel in the detector to the precise location on the sky that it will see. We will measure the sharpness of stellar images at each point in an instrument’s image to enable the optimal extraction of scientific information. We will demonstrate target acquisition for coronagraphy and spectroscopy, and test a few special types of observations, including targets within our Solar System, and time-series observations of exoplanet transits.
+`,
+        "oneliner": "",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "in progress",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/instrumentCommIcon1-250px.png",
+        "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/instrumentsCommOverallCompositeImage-1200px.jpg",
+        "youtube_url": "",
+        "info_url": "",
+        "custom_link": "",
+        "custom_link_text": ""
+    },
+    {
+        "index": 40,
         "name": "First science image",
         "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
         "description": `We expect the first science images from JWST to come back in late July. You will be notified as soon as the first image is available.
@@ -565,62 +605,75 @@ Are you as excited as I am?`,
 ]
 
 async function getNewDeploymentStep() {
-    const newDeploymentStepUrl = 'https://jwst.nasa.gov/content/webbLaunch/flightCurrentState2.0.json'
+    const newDeploymentStepUrl = 'https://www.jwst.nasa.gov/content/webbLaunch/flightCurrentState2.0.json'
     const response = await axios.get(newDeploymentStepUrl)
-    return response.data['currentState']['currentDeployTableIndex']
+    let currentIndex = response.data['currentState']['currentDeployTableIndex']
+
+    const manualDeploymentStepRef = admin.firestore().collection('manualDeploymentStep')
+    const manualDeploymentStepDoc = manualDeploymentStepRef.doc('manualDeploymentStep')
+    const snapshot = await manualDeploymentStepDoc.get()
+    const manualDeploymentStep = snapshot.data()["index"];
+
+    if (manualDeploymentStep !== null && manualDeploymentStep > currentIndex) {
+        functions.logger.log("Manual deployment step is greater than current deployment step, using manual deployment step");
+        currentIndex = manualDeploymentStep;
+    }
+
+    return currentIndex;
 }
 
 async function sendNotification(newDeploymentStep) {
     // Send notification to all users
     const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
         notification: {
-            title: deployment_step_list[newDeploymentStep]['name'],
+            title: deploymentStepList[newDeploymentStep]['name'],
             body: "James Webb Space Telescope has reached a new step!",
             sound: "default"
         },
         data: {
             step: newDeploymentStep.toString(),
-            step_name: deployment_step_list[newDeploymentStep]['name'] ??= "",
-            description: deployment_step_list[newDeploymentStep]['description'] ??= "",
-            oneliner: deployment_step_list[newDeploymentStep]['oneliner'] ??= "",
-            event_datetime: deployment_step_list[newDeploymentStep]['event_datetime'] ??= "",
-            video_url: deployment_step_list[newDeploymentStep]['video_url'] ??= "",
-            video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'] ??= "",
-            new_status: deployment_step_list[newDeploymentStep]['status'] ??= "",
-            next_step_name: deployment_step_list[newDeploymentStep + 1]['name'] ??= "",
-            custom_link: deployment_step_list[newDeploymentStep]['custom_link'] ??= "",
-            custom_link_text: deployment_step_list[newDeploymentStep]['custom_link_text'] ??= "",
+            step_name: deploymentStepList[newDeploymentStep]['name'],
+            description: deploymentStepList[newDeploymentStep]['description'],
+            oneliner: deploymentStepList[newDeploymentStep]['oneliner'],
+            event_datetime: deploymentStepList[newDeploymentStep]['event_datetime'],
+            video_url: deploymentStepList[newDeploymentStep]['video_url'],
+            video_local_url: deploymentStepList[newDeploymentStep]['video_local_url'],
+            new_status: deploymentStepList[newDeploymentStep]['status'],
+            next_step_name: deploymentStepList[newDeploymentStep + 1]['name'],
+            custom_link: deploymentStepList[newDeploymentStep]['custom_link'],
+            custom_link_text: deploymentStepList[newDeploymentStep]['custom_link_text'],
 
             click_action: "FLUTTER_NOTIFICATION_CLICK"
         },
     });
 }
 
-
 async function sendTestNotification(newDeploymentStep) {
+    // Send notification to all users
     const messageResponse = await admin.messaging().sendToTopic("new_deployment_step_test", {
         notification: {
-            title: deployment_step_list[newDeploymentStep]['name'],
-            body: "James Webb Space Telescope has completed the next deployment step!",
+            title: deploymentStepList[newDeploymentStep]['name'],
+            body: "James Webb Space Telescope has reached a new step!",
             sound: "default"
         },
         data: {
             step: newDeploymentStep.toString(),
-            step_name: deployment_step_list[newDeploymentStep]['name'] ??= "",
-            description: deployment_step_list[newDeploymentStep]['description'] ??= "",
-            oneliner: deployment_step_list[newDeploymentStep]['oneliner'] ??= "",
-            event_datetime: deployment_step_list[newDeploymentStep]['event_datetime'] ??= "",
-            video_url: deployment_step_list[newDeploymentStep]['video_url'] ??= "",
-            video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'] ??= "",
-            new_status: deployment_step_list[newDeploymentStep]['status'] ??= "",
-            next_step_name: deployment_step_list[newDeploymentStep + 1]['name'] ??= "",
-            custom_link: deployment_step_list[newDeploymentStep]['custom_link'] ??= "",
-            custom_link_text: deployment_step_list[newDeploymentStep]['custom_link_text'] ??= "",
+            step_name: deploymentStepList[newDeploymentStep]['name'],
+            description: deploymentStepList[newDeploymentStep]['description'],
+            oneliner: deploymentStepList[newDeploymentStep]['oneliner'],
+            event_datetime: deploymentStepList[newDeploymentStep]['event_datetime'],
+            video_url: deploymentStepList[newDeploymentStep]['video_url'],
+            video_local_url: deploymentStepList[newDeploymentStep]['video_local_url'],
+            new_status: deploymentStepList[newDeploymentStep]['status'],
+            next_step_name: deploymentStepList[newDeploymentStep + 1]['name'],
+            custom_link: deploymentStepList[newDeploymentStep]['custom_link'],
+            custom_link_text: deploymentStepList[newDeploymentStep]['custom_link_text'],
 
             click_action: "FLUTTER_NOTIFICATION_CLICK"
         },
     });
 }
+
 
 exports.checkDeploymentStepTest = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
     const currentDeploymentStepRef = admin.firestore().collection('currentDeploymentStepTest')
@@ -654,25 +707,6 @@ exports.checkDeploymentStep = functions.pubsub.schedule('every 1 minutes').onRun
 });
 
 
-exports.getCurrentDeploymentStep = functions.https.onCall(async (data, context) => {
-    functions.logger.log("Getting current deployment step for user");
-    const newDeploymentStep = await getNewDeploymentStep()
-    return {
-        step: newDeploymentStep,
-        step_name: deployment_step_list[newDeploymentStep]['name'],
-        description: deployment_step_list[newDeploymentStep]['description'],
-        oneliner: deployment_step_list[newDeploymentStep]['oneliner'],
-        event_datetime: deployment_step_list[newDeploymentStep]['event_datetime'],
-        video_url: deployment_step_list[newDeploymentStep]['video_url'],
-        video_local_url: deployment_step_list[newDeploymentStep]['video_local_url'],
-        status: "success",
-        new_status: deployment_step_list[newDeploymentStep]['status'],
-        next_step_name: deployment_step_list[newDeploymentStep + 1]['name'],
-        custom_link: deployment_step_list[newDeploymentStep]['custom_link'],
-        custom_link_text: deployment_step_list[newDeploymentStep]['custom_link_text'],
-    };
-});
-
 exports.getCurrentDeploymentStepIndex = functions.https.onCall(async (data, context) => {
     return await getNewDeploymentStep();
 });
@@ -680,43 +714,44 @@ exports.getCurrentDeploymentStepIndex = functions.https.onCall(async (data, cont
 
 exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => {
     functions.logger.log("Getting all deployment steps");
-    let current_index = await getNewDeploymentStep();
-    for (let i = 0; i < deployment_step_list.length; i++) {
-        if (!deployment_step_list[i]['info_url']) {
-            if (i === current_index) {
-                deployment_step_list[i]['info_url'] = whereIsWebbURL;
+    let currentIndex = await getNewDeploymentStep();
+
+    for (let i = 0; i < deploymentStepList.length; i++) {
+        if (!deploymentStepList[i]['info_url']) {
+            if (i === currentIndex) {
+                deploymentStepList[i]['info_url'] = whereIsWebbURL;
             } else {
-                deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+                deploymentStepList[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
             }
         }
-        deployment_step_list[i]['current_index'] = current_index;
+        deploymentStepList[i]['current_index'] = currentIndex;
     }
 
-    if (deployment_step_list[current_index]['status'] !== "success") {
-        deployment_step_list[current_index]['status'] = "in progress";
+    if (deploymentStepList[currentIndex]['status'] !== "success") {
+        deploymentStepList[currentIndex]['status'] = "in progress";
     }
-    return deployment_step_list;
+    return deploymentStepList;
 });
 
 
 exports.getAllDeploymentStepsTest = functions.https.onCall(async (data, context) => {
     functions.logger.log("TEST: Getting all deployment steps");
-    let current_index = await getNewDeploymentStep();
-    for (let i = 0; i < deployment_step_list.length; i++) {
-        if (!deployment_step_list[i]['info_url']) {
-            if (i === current_index) {
-                deployment_step_list[i]['info_url'] = whereIsWebbURL;
+    let currentIndex = await getNewDeploymentStep();
+    for (let i = 0; i < deploymentStepList.length; i++) {
+        if (!deploymentStepList[i]['info_url']) {
+            if (i === currentIndex) {
+                deploymentStepList[i]['info_url'] = whereIsWebbURL;
             } else {
-                deployment_step_list[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+                deploymentStepList[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
             }
         }
-        deployment_step_list[i]['current_index'] = current_index;
+        deploymentStepList[i]['current_index'] = currentIndex;
     }
 
-    if (deployment_step_list[current_index]['status'] !== "success") {
-        deployment_step_list[current_index]['status'] = "in progress";
+    if (deploymentStepList[currentIndex]['status'] !== "success") {
+        deploymentStepList[currentIndex]['status'] = "in progress";
     }
-    return deployment_step_list;
+    return deploymentStepList;
 });
 
 
