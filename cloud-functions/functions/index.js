@@ -578,7 +578,7 @@ For each instrument, the Webb team will now conduct an extensive suite of calibr
         "oneliner": "",
         "video_url": "",
         "video_local_url": "",
-        "status": "in progress",
+        "status": "success",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/instrumentCommIcon1-250px.png",
         "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/instrumentsCommOverallCompositeImage-1200px.jpg",
         "youtube_url": "",
@@ -588,6 +588,31 @@ For each instrument, the Webb team will now conduct an extensive suite of calibr
     },
     {
         "index": 40,
+        "name": "Instrument Modes Check Off",
+        "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
+        "description": `Each instrument has multiple modes of operation. During commissioning we test, calibrate, verify and ultimately signoff on each mode signifying that it is ready for science operations. The adjacent image will be updated to track the final sign offs over the next 2 months of commissioning. NOTE: mode check out and sign offs do NOT occur in the order listed. The following list of instrument modes will be detailed in a future blog.
+
+NIRCAM: Imaging | Wide field slitless spectroscopy | Coronagraphy | Time series observations – imaging | Time series observations – grism
+
+NIRSPEC: Multi-object spectroscopy | Fixed slit spectroscopy | Integral field unit spectroscopy | Bright object time series
+
+NIRISS: Single object slitless spectroscopy | Wide field slitless spectroscopy | Aperture masking interferometry | Imaging (parallel only)
+
+MIRI: Imaging | Low resolution spectroscopy | Medium resolution spectroscopy | Coronagraphic imaging
+`,
+        "oneliner": "Mode Commissioning Tracker",
+        "video_url": "",
+        "video_local_url": "",
+        "status": "in progress",
+        "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/instrumentModesIcon2.5-250px.png",
+        "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/InstrumentsTracking2.300-2000px.png",
+        "youtube_url": "",
+        "info_url": "",
+        "custom_link": "https://blogs.nasa.gov/webb/",
+        "custom_link_text": "Blog: Seventeen Modes to Discovery"
+    },
+    {
+        "index": 41,
         "name": "First science image",
         "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
         "description": `We expect the first science images from JWST to come back in late July. You will be notified as soon as the first image is available.
@@ -600,7 +625,9 @@ Are you as excited as I am?`,
         "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Question_mark.png",
         "image_url2": "https://upload.wikimedia.org/wikipedia/commons/a/af/Question_mark.png",
         "youtube_url": "",
-        "info_url": ""
+        "info_url": "",
+        "custom_link": "",
+        "custom_link_text": ""
     },
 ]
 
