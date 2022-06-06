@@ -13,8 +13,8 @@ Available on the [play store](https://play.google.com/store/apps/details?id=com.
 
 ## How it works
 
-The app uses data from the [official NASA website](https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html) 
-to send a push notification as soon as a new deployment step has been reached.
+The app parses data from the [official NASA website](https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html) 
+to send a push notification as soon as a new step has been reached.
 
 ## Dependencies
 
