@@ -2,13 +2,15 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios = require('axios')
 const dayjs = require('dayjs')
+const puppeteer = require('puppeteer')
 dayjs().format()
 admin.initializeApp();
 
 const launchDateTime = dayjs('2021-12-25T12:20Z')
 const whereIsWebbURL = 'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
 
-const deploymentStepList = [
+// TODO: Move to firestore and update via web scraping
+const steps = [
     {
         "index": 0,
         "name": "Waiting For Launch",
@@ -605,7 +607,7 @@ MIRI: Imaging | Low resolution spectroscopy | Medium resolution spectroscopy | C
         "video_local_url": "",
         "status": "in progress",
         "image_url": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/instrumentModesIcon2.5-250px.png",
-        "image_url2": "https://www.jwst.nasa.gov/content/webbLaunch/assets/images/mirrorAlignment/InstrumentsTracking2.300-2000px.png",
+        "image_url2": "",
         "youtube_url": "",
         "info_url": "",
         "custom_link": "https://blogs.nasa.gov/webb/",
@@ -613,12 +615,12 @@ MIRI: Imaging | Low resolution spectroscopy | Medium resolution spectroscopy | C
     },
     {
         "index": 41,
-        "name": "First science image",
+        "name": "First full-color image",
         "event_datetime": (launchDateTime.add(6, 'month')).toISOString(),
-        "description": `We expect the first science images from JWST to come back in late July. You will be notified as soon as the first image is available.
+        "description": `The first full-color images will be released on July 12th! You will be notified as soon as the first image is available.
 
 Are you as excited as I am?`,
-        "oneliner": "Webb's first image. You will be notified when it is available.",
+        "oneliner": "Webb's first image will be released on July 12th",
         "video_url": "",
         "video_local_url": "",
         "status": "future",
@@ -631,6 +633,34 @@ Are you as excited as I am?`,
     },
 ]
 
+
+exports.migrateJsonToFirestore = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
+    let db = admin.firestore();
+
+    steps.forEach(function (step) {
+        db.collection("steps").doc(step.index.toString()).set({
+            index: step.index,
+            name: step.name,
+            event_datetime: step.event_datetime,
+            description: step.description,
+            oneliner: step.oneliner,
+            video_url: step.video_url != null ? step.video_url : "",
+            status: step.status != null ? step.status : "",
+            image_url: step.image_url != null ? step.image_url : "",
+            image_url2: step.image_url2 != null ? step.image_url : "",
+            youtube_url: step.youtube_url != null ? step.youtube_url : "",
+            info_url: step.info_url != null ? step.info_url : "",
+            custom_link: step.custom_link != null ? step.custom_link : "",
+            custom_link_text: step.custom_link_text != null ? step.custom_link_text : ""
+        }).then(function (docRef) {
+            console.log("Document written with ID: ", docRef.id);
+        })
+            .catch(function (error) {
+                console.error("Error adding document: ", error);
+            });
+    });
+});
+
 async function getNewDeploymentStep() {
     const newDeploymentStepUrl = 'https://www.jwst.nasa.gov/content/webbLaunch/flightCurrentState2.0.json'
     const response = await axios.get(newDeploymentStepUrl)
@@ -639,11 +669,9 @@ async function getNewDeploymentStep() {
     const manualDeploymentStepRef = admin.firestore().collection('manualDeploymentStep')
     const manualDeploymentStepDoc = manualDeploymentStepRef.doc('manualDeploymentStep')
     const snapshot = await manualDeploymentStepDoc.get()
-    const manualDeploymentStep = snapshot.data()["index"];
-
-    if (manualDeploymentStep !== null && manualDeploymentStep > currentIndex) {
-        functions.logger.log("Manual deployment step is greater than current deployment step, using manual deployment step");
-        currentIndex = manualDeploymentStep;
+    if (snapshot.exists) {
+        functions.logger.log("Using manual deployment step");
+        currentIndex = snapshot.data()["index"];
     }
 
     return currentIndex;
@@ -653,68 +681,27 @@ async function sendNotification(newDeploymentStep) {
     // Send notification to all users
     const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
         notification: {
-            title: deploymentStepList[newDeploymentStep]['name'],
+            title: steps[newDeploymentStep]['name'],
             body: "James Webb Space Telescope has reached a new step!",
             sound: "default"
         },
         data: {
             step: newDeploymentStep.toString(),
-            step_name: deploymentStepList[newDeploymentStep]['name'],
-            description: deploymentStepList[newDeploymentStep]['description'],
-            oneliner: deploymentStepList[newDeploymentStep]['oneliner'],
-            event_datetime: deploymentStepList[newDeploymentStep]['event_datetime'],
-            video_url: deploymentStepList[newDeploymentStep]['video_url'],
-            video_local_url: deploymentStepList[newDeploymentStep]['video_local_url'],
-            new_status: deploymentStepList[newDeploymentStep]['status'],
-            next_step_name: deploymentStepList[newDeploymentStep + 1]['name'],
-            custom_link: deploymentStepList[newDeploymentStep]['custom_link'],
-            custom_link_text: deploymentStepList[newDeploymentStep]['custom_link_text'],
+            step_name: steps[newDeploymentStep]['name'],
+            description: steps[newDeploymentStep]['description'],
+            oneliner: steps[newDeploymentStep]['oneliner'],
+            event_datetime: steps[newDeploymentStep]['event_datetime'],
+            video_url: steps[newDeploymentStep]['video_url'],
+            video_local_url: steps[newDeploymentStep]['video_local_url'],
+            new_status: steps[newDeploymentStep]['status'],
+            next_step_name: steps[newDeploymentStep + 1]['name'],
+            custom_link: steps[newDeploymentStep]['custom_link'],
+            custom_link_text: steps[newDeploymentStep]['custom_link_text'],
 
             click_action: "FLUTTER_NOTIFICATION_CLICK"
         },
     });
 }
-
-async function sendTestNotification(newDeploymentStep) {
-    // Send notification to all users
-    const messageResponse = await admin.messaging().sendToTopic("new_deployment_step_test", {
-        notification: {
-            title: deploymentStepList[newDeploymentStep]['name'],
-            body: "James Webb Space Telescope has reached a new step!",
-            sound: "default"
-        },
-        data: {
-            step: newDeploymentStep.toString(),
-            step_name: deploymentStepList[newDeploymentStep]['name'],
-            description: deploymentStepList[newDeploymentStep]['description'],
-            oneliner: deploymentStepList[newDeploymentStep]['oneliner'],
-            event_datetime: deploymentStepList[newDeploymentStep]['event_datetime'],
-            video_url: deploymentStepList[newDeploymentStep]['video_url'],
-            video_local_url: deploymentStepList[newDeploymentStep]['video_local_url'],
-            new_status: deploymentStepList[newDeploymentStep]['status'],
-            next_step_name: deploymentStepList[newDeploymentStep + 1]['name'],
-            custom_link: deploymentStepList[newDeploymentStep]['custom_link'],
-            custom_link_text: deploymentStepList[newDeploymentStep]['custom_link_text'],
-
-            click_action: "FLUTTER_NOTIFICATION_CLICK"
-        },
-    });
-}
-
-
-exports.checkDeploymentStepTest = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
-    const currentDeploymentStepRef = admin.firestore().collection('currentDeploymentStepTest')
-    const oldDeploymentStepDoc = currentDeploymentStepRef.doc('currentDeploymentStepTest')
-    const snapshot = await oldDeploymentStepDoc.get()
-    const oldDeploymentStep = snapshot.data()["index"];
-    const newDeploymentStep = await getNewDeploymentStep()
-
-    functions.logger.log("New Deployment Step: ", newDeploymentStep);
-
-    await sendTestNotification(oldDeploymentStep);
-
-    return null;
-});
 
 
 exports.checkDeploymentStep = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
@@ -734,6 +721,31 @@ exports.checkDeploymentStep = functions.pubsub.schedule('every 1 minutes').onRun
 });
 
 
+exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsub.schedule('every 10 minutes').onRun(async (context) => {
+    const browser = await puppeteer.launch({});
+    const page = await browser.newPage();
+
+    await page.goto('https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#41');
+    const element = await page.waitForSelector('a[title="view full size in new tab"]');
+    const asset = await page.evaluate(element => element.getAttribute('href'), element);
+    const newImageLink = 'https://www.jwst.nasa.gov' + asset;
+
+
+    const oldImageRef = admin.firestore().collection('instrumentsTrackingImage')
+    const oldImageDoc = oldImageRef.doc('instrumentsTrackingImage')
+    const snapshot = await oldImageDoc.get()
+    const oldImageLink = snapshot.data()["url"];
+
+    if (newImageLink !== oldImageLink) {
+        const writeResult = await oldImageDoc.set({url: newImageLink});
+        functions.logger.log("Updated instruments tracking image");
+        // TODO: send notification
+    }
+
+    await browser.close();
+});
+
+
 exports.getCurrentDeploymentStepIndex = functions.https.onCall(async (data, context) => {
     return await getNewDeploymentStep();
 });
@@ -743,43 +755,28 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
     functions.logger.log("Getting all deployment steps");
     let currentIndex = await getNewDeploymentStep();
 
-    for (let i = 0; i < deploymentStepList.length; i++) {
-        if (!deploymentStepList[i]['info_url']) {
+    for (let i = 0; i < steps.length; i++) {
+        if (!steps[i]['info_url']) {
             if (i === currentIndex) {
-                deploymentStepList[i]['info_url'] = whereIsWebbURL;
+                steps[i]['info_url'] = whereIsWebbURL;
             } else {
-                deploymentStepList[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
+                steps[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
             }
         }
-        deploymentStepList[i]['current_index'] = currentIndex;
+        steps[i]['current_index'] = currentIndex;
     }
 
-    if (deploymentStepList[currentIndex]['status'] !== "success") {
-        deploymentStepList[currentIndex]['status'] = "in progress";
+    if (steps[currentIndex]['status'] !== "success") {
+        steps[currentIndex]['status'] = "in progress";
     }
-    return deploymentStepList;
+
+    // TODO: Use firestore for all steps
+    const instrumentsTrackingImage = admin.firestore().collection('instrumentsTrackingImage')
+    const imageDoc = instrumentsTrackingImage.doc('instrumentsTrackingImage')
+    const snapshot = await imageDoc.get()
+    steps[40]['image_url2'] = snapshot.data()["url"];
+
+    return steps;
 });
-
-
-exports.getAllDeploymentStepsTest = functions.https.onCall(async (data, context) => {
-    functions.logger.log("TEST: Getting all deployment steps");
-    let currentIndex = await getNewDeploymentStep();
-    for (let i = 0; i < deploymentStepList.length; i++) {
-        if (!deploymentStepList[i]['info_url']) {
-            if (i === currentIndex) {
-                deploymentStepList[i]['info_url'] = whereIsWebbURL;
-            } else {
-                deploymentStepList[i]['info_url'] = "https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#" + (i + 1);
-            }
-        }
-        deploymentStepList[i]['current_index'] = currentIndex;
-    }
-
-    if (deploymentStepList[currentIndex]['status'] !== "success") {
-        deploymentStepList[currentIndex]['status'] = "in progress";
-    }
-    return deploymentStepList;
-});
-
 
 
