@@ -28,24 +28,25 @@ async function getNewDeploymentStep() {
 
 async function sendNotification(newDeploymentStep) {
     // Send notification to all users
+    const newStepDoc = admin.firestore().collection('steps').doc(newDeploymentStep.toString()).get();
+    const step = (await newStepDoc).data()
     const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
         notification: {
-            title: steps[newDeploymentStep]['name'],
+            title: step['name'],
             body: "James Webb Space Telescope has reached a new step!",
             sound: "default"
         },
         data: {
             step: newDeploymentStep.toString(),
-            step_name: steps[newDeploymentStep]['name'],
-            description: steps[newDeploymentStep]['description'],
-            oneliner: steps[newDeploymentStep]['oneliner'],
-            event_datetime: steps[newDeploymentStep]['event_datetime'],
-            video_url: steps[newDeploymentStep]['video_url'],
-            video_local_url: steps[newDeploymentStep]['video_local_url'],
-            new_status: steps[newDeploymentStep]['status'],
-            next_step_name: steps[newDeploymentStep + 1]['name'],
-            custom_link: steps[newDeploymentStep]['custom_link'],
-            custom_link_text: steps[newDeploymentStep]['custom_link_text'],
+            step_name: step['name'],
+            description: step['description'],
+            oneliner: step['oneliner'],
+            event_datetime: step['event_datetime'],
+            video_url: step['video_url'],
+            video_local_url: step['video_local_url'],
+            new_status: step['status'],
+            custom_link: step['custom_link'],
+            custom_link_text: step['custom_link_text'],
 
             click_action: "FLUTTER_NOTIFICATION_CLICK"
         },
