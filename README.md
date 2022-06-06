@@ -1,5 +1,5 @@
 <h1 align=center>Where is Webb?</h1>
-<p align=center>An android app that provides information and sends push notifications about the James Webb Space Telescope.</p>
+<p align=center>An android app that keeps you up to date about the James Webb Space Telescope via push notifications.</p>
 
 <p align="center">
   <img src="docs/images/first-image.png" width="220">
