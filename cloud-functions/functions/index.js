@@ -6,7 +6,6 @@ const puppeteer = require('puppeteer')
 dayjs().format()
 admin.initializeApp();
 
-const launchDateTime = dayjs('2021-12-25T12:20Z')
 const whereIsWebbURL = 'https://www.jwst.nasa.gov/content/webbLaunch/whereIsWebb.html';
 
 
