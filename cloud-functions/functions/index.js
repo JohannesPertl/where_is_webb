@@ -703,6 +703,21 @@ async function sendNotification(newDeploymentStep) {
     });
 }
 
+async function sendCustomNotification(title, body) {
+    // Note: App only uses new_deployment_step topic, needs to stay to be backwards compatible
+    const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
+        notification: {
+            title: title,
+            body: body,
+            sound: "default"
+        },
+        data: {
+            click_action: "FLUTTER_NOTIFICATION_CLICK"
+        },
+    });
+}
+
+
 
 exports.checkDeploymentStep = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
     const currentDeploymentStepRef = admin.firestore().collection('currentDeploymentStep')
@@ -739,7 +754,7 @@ exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsu
     if (newImageLink !== oldImageLink) {
         const writeResult = await oldImageDoc.set({url: newImageLink});
         functions.logger.log("Updated instruments tracking image");
-        // TODO: send notification
+        await sendCustomNotification("Webb Mode Commissioning Tracker", "A new mode for the James Webb Space Telescope has been approved")
     }
 
     await browser.close();
