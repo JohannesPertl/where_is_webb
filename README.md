@@ -2,7 +2,8 @@
 <p align=center>An android app that provides notifications about the deployment steps of the James Webb Space Telescope.</p>
 
 <p align="center">
-  <img src="docs/images/screenshot-pixel4a.png" width="220">
+  <img src="docs/images/first-image.png" width="220">
+  <img src="docs/images/unfold.png" width="220">
   <img src="docs/images/screenshot-notification.png" width="220">
 </p>
 
