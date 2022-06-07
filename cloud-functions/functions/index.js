@@ -54,7 +54,7 @@ async function sendNotification(newDeploymentStep) {
 
 async function sendCustomNotification(title, body) {
     // Note: App only uses new_deployment_step topic, needs to stay to be backwards compatible
-    const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
+    const messageResponse = await admin.messaging().sendToTopic("new_deployment_step_test", {
         notification: {
             title: title,
             body: body,
@@ -114,8 +114,9 @@ exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsu
     const oldImageLink = snapshot.data()["image_url2"];
 
     if (newImageLink !== oldImageLink) {
+        // TODO: Validate!
         await instrumentsTrackingDoc.update({'image_url2': newImageLink});
-        functions.logger.log("Updated instruments tracking image");
+        functions.logger.log("Updated instruments tracking image link: ", newImageLink);
         await sendCustomNotification("Webb Mode Commissioning Tracker", "A new mode for the James Webb Space Telescope has been approved")
     }
 
@@ -132,7 +133,6 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
     functions.logger.log("Getting all deployment steps");
     const allSteps = await admin.firestore().collection('steps').orderBy("index", 'asc').get();
 
-
     const stepsJson = [];
     allSteps.forEach(step => {
         stepsJson.push(step.data());
@@ -141,4 +141,47 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
     return stepsJson;
 });
 
+
+// exports.updateSteps = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
+//     // TODO: Update steps by scraping NASA website
+//     const browser = await puppeteer.launch({});
+//     const page = await browser.newPage();
+//
+//     await page.goto('https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#41');
+//     const element = await page.waitForSelector('a[title="view full size in new tab"]');
+//     const asset = await page.evaluate(element => element.getAttribute('href'), element);
+//     const newImageLink = 'https://www.jwst.nasa.gov' + asset;
+//
+//
+//
+//
+//
+//
+//
+//
+//     let db = admin.firestore();
+//
+//     steps.forEach(function (step) {
+//         db.collection("steps").doc(step.index.toString()).set({
+//             index: step.index,
+//             name: step.name,
+//             event_datetime: step.event_datetime,
+//             description: step.description,
+//             oneliner: step.oneliner,
+//             video_url: step.video_url != null ? step.video_url : "",
+//             status: step.status != null ? step.status : "",
+//             image_url: step.image_url != null ? step.image_url : "",
+//             image_url2: step.image_url2 != null ? step.image_url : "",
+//             youtube_url: step.youtube_url != null ? step.youtube_url : "",
+//             info_url: step.info_url != null ? step.info_url : "",
+//             custom_link: step.custom_link != null ? step.custom_link : "",
+//             custom_link_text: step.custom_link_text != null ? step.custom_link_text : ""
+//         }).then(function (docRef) {
+//             console.log("Document written with ID: ", docRef.id);
+//         })
+//             .catch(function (error) {
+//                 console.error("Error adding document: ", error);
+//             });
+//     });
+// });
 
