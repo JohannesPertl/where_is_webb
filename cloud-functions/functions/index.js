@@ -1,8 +1,9 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const axios = require('axios')
-const dayjs = require('dayjs')
-const puppeteer = require('puppeteer')
+const axios = require('axios');
+const dayjs = require('dayjs');
+const puppeteer = require('puppeteer');
+const validUrl = require("valid-url");
 dayjs().format()
 admin.initializeApp();
 
@@ -54,7 +55,7 @@ async function sendNotification(newDeploymentStep) {
 
 async function sendCustomNotification(title, body) {
     // Note: App only uses new_deployment_step topic, needs to stay to be backwards compatible
-    const messageResponse = await admin.messaging().sendToTopic("new_deployment_step_test", {
+    const messageResponse = await admin.messaging().sendToTopic("new_deployment_step", {
         notification: {
             title: title,
             body: body,
@@ -67,7 +68,7 @@ async function sendCustomNotification(title, body) {
 }
 
 
-exports.checkDeploymentStep = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
+exports.checkDeploymentStep = functions.pubsub.schedule('every 5 minutes').onRun(async (context) => {
     const currentDeploymentStepRef = admin.firestore().collection('currentDeploymentStep')
     const oldDeploymentStepDoc = currentDeploymentStepRef.doc('currentDeploymentStep')
     const snapshot = await oldDeploymentStepDoc.get()
@@ -99,11 +100,14 @@ exports.checkDeploymentStep = functions.pubsub.schedule('every 1 minutes').onRun
 });
 
 
-exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsub.schedule('every 10 minutes').onRun(async (context) => {
+exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsub.schedule('every 60 minutes').onRun(async (context) => {
     const browser = await puppeteer.launch({});
     const page = await browser.newPage();
 
-    await page.goto('https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#41');
+    await page.goto('https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#41', {
+        waitUntil: "load",
+        timeout: 10000
+    });
     const element = await page.waitForSelector('a[title="view full size in new tab"]');
     const asset = await page.evaluate(element => element.getAttribute('href'), element);
     const newImageLink = 'https://www.jwst.nasa.gov' + asset;
@@ -114,12 +118,13 @@ exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsu
     const oldImageLink = snapshot.data()["image_url2"];
 
     if (newImageLink !== oldImageLink) {
-        // TODO: Validate!
-        await instrumentsTrackingDoc.update({'image_url2': newImageLink});
-        functions.logger.log("Updated instruments tracking image link: ", newImageLink);
-        await sendCustomNotification("Webb Mode Commissioning Tracker", "A new mode for the James Webb Space Telescope has been approved")
+        if (validUrl.isUri(newImageLink)) {
+            await sendCustomNotification("Webb Mode Commissioning Tracker", "A new mode for the James Webb Space Telescope has been approved")
+            functions.logger.log("Sending notification: Updated instruments tracking image link: ", newImageLink);
+        } else {
+            functions.logger.log(newImageLink, " is invalid")
+        }
     }
-
     await browser.close();
 });
 
@@ -140,48 +145,3 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
 
     return stepsJson;
 });
-
-
-// exports.updateSteps = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
-//     // TODO: Update steps by scraping NASA website
-//     const browser = await puppeteer.launch({});
-//     const page = await browser.newPage();
-//
-//     await page.goto('https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#41');
-//     const element = await page.waitForSelector('a[title="view full size in new tab"]');
-//     const asset = await page.evaluate(element => element.getAttribute('href'), element);
-//     const newImageLink = 'https://www.jwst.nasa.gov' + asset;
-//
-//
-//
-//
-//
-//
-//
-//
-//     let db = admin.firestore();
-//
-//     steps.forEach(function (step) {
-//         db.collection("steps").doc(step.index.toString()).set({
-//             index: step.index,
-//             name: step.name,
-//             event_datetime: step.event_datetime,
-//             description: step.description,
-//             oneliner: step.oneliner,
-//             video_url: step.video_url != null ? step.video_url : "",
-//             status: step.status != null ? step.status : "",
-//             image_url: step.image_url != null ? step.image_url : "",
-//             image_url2: step.image_url2 != null ? step.image_url : "",
-//             youtube_url: step.youtube_url != null ? step.youtube_url : "",
-//             info_url: step.info_url != null ? step.info_url : "",
-//             custom_link: step.custom_link != null ? step.custom_link : "",
-//             custom_link_text: step.custom_link_text != null ? step.custom_link_text : ""
-//         }).then(function (docRef) {
-//             console.log("Document written with ID: ", docRef.id);
-//         })
-//             .catch(function (error) {
-//                 console.error("Error adding document: ", error);
-//             });
-//     });
-// });
-

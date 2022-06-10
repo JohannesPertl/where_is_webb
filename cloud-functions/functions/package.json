@@ -17,7 +17,8 @@
     "dayjs": "^1.10.7",
     "firebase-admin": "^9.8.0",
     "firebase-functions": "^3.21.2",
-    "puppeteer": "^14.2.1"
+    "puppeteer": "^14.2.1",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
