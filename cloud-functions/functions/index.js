@@ -185,6 +185,7 @@ exports.checkNewStepAdded = functions.runWith({memory: "1GB"}).pubsub.schedule('
             custom_link: "",
             custom_link_text: ""
         });
+        await latestStepIdDoc.set({latestStepId: newStepId});
         functions.logger.log("New step added: ", newStepId);
         await sendCustomNotification(newStep.title, "A new step has been added to the James Webb Space Telescope", "new_deployment_step");
     }
