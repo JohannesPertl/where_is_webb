@@ -122,6 +122,7 @@ exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsu
 
     if (newImageLink !== oldImageLink) {
         if (validUrl.isUri(newImageLink)) {
+            await instrumentsTrackingDoc.update({'image_url2': newImageLink});
             await sendCustomNotification("Webb Mode Commissioning Tracker", "A new mode for the James Webb Space Telescope has been commissioned", "new_deployment_step")
             functions.logger.log("Sending notification: Updated instruments tracking image link: ", newImageLink);
         } else {
