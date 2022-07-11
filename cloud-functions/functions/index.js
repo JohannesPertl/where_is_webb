@@ -81,7 +81,10 @@ exports.checkDeploymentStep = functions.pubsub.schedule('every 5 minutes').onRun
     const oldDeploymentStep = snapshot.data()["index"];
     const newDeploymentStep = await getCurrentDeploymentStep()
 
+
     if (newDeploymentStep !== oldDeploymentStep) {
+        // Make sure that new step is in firestore
+        await callCheckNewStepAdded();
         // Update the deployment step index in Firestore to the new one
         await oldDeploymentStepDoc.set({index: newDeploymentStep});
         // Update status and info url of current deployment step
@@ -94,9 +97,9 @@ exports.checkDeploymentStep = functions.pubsub.schedule('every 5 minutes').onRun
         // Workaround, as app needs current index from any step: Add current index to all steps
         const allSteps = await admin.firestore().collection('steps').get();
         allSteps.forEach(step => {
-            const stepDoc = admin.firestore().collection('steps').doc(step['index'].toString());
-            stepDoc.update({'current_index': newDeploymentStep});
+            step.ref.update({'current_index': newDeploymentStep});
         });
+
 
         functions.logger.log("Deployment step was updated: ", newDeploymentStep);
         await sendNotification(newDeploymentStep);
@@ -105,32 +108,32 @@ exports.checkDeploymentStep = functions.pubsub.schedule('every 5 minutes').onRun
     return null;
 });
 
-
-exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsub.schedule('every 60 minutes').onRun(async (context) => {
-    const browser = await puppeteer.launch({});
-    const page = await browser.newPage();
-
-    await page.goto('https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#41', puppeteerOptions);
-    const element = await page.waitForSelector('a[title="view full size in new tab"]');
-    const asset = await page.evaluate(element => element.getAttribute('href'), element);
-    const newImageLink = 'https://www.jwst.nasa.gov' + asset;
-
-
-    const instrumentsTrackingDoc = admin.firestore().collection('steps').doc('40');
-    const snapshot = await instrumentsTrackingDoc.get()
-    const oldImageLink = snapshot.data()["image_url2"];
-
-    if (newImageLink !== oldImageLink) {
-        if (validUrl.isUri(newImageLink)) {
-            await instrumentsTrackingDoc.update({'image_url2': newImageLink});
-            await sendCustomNotification("Webb Mode Commissioning Tracker", "A new mode for the James Webb Space Telescope has been commissioned", "new_deployment_step")
-            functions.logger.log("Sending notification: Updated instruments tracking image link: ", newImageLink);
-        } else {
-            functions.logger.error(newImageLink, " is invalid")
-        }
-    }
-    await browser.close();
-});
+//
+// exports.checkInstrumentsTrackingImage = functions.runWith({memory: "1GB"}).pubsub.schedule('every 60 minutes').onRun(async (context) => {
+//     const browser = await puppeteer.launch({});
+//     const page = await browser.newPage();
+//
+//     await page.goto('https://www.jwst.nasa.gov/content/webbLaunch/deploymentExplorer.html#41', puppeteerOptions);
+//     const element = await page.waitForSelector('a[title="view full size in new tab"]');
+//     const asset = await page.evaluate(element => element.getAttribute('href'), element);
+//     const newImageLink = 'https://www.jwst.nasa.gov' + asset;
+//
+//
+//     const instrumentsTrackingDoc = admin.firestore().collection('steps').doc('40');
+//     const snapshot = await instrumentsTrackingDoc.get()
+//     const oldImageLink = snapshot.data()["image_url2"];
+//
+//     if (newImageLink !== oldImageLink) {
+//         if (validUrl.isUri(newImageLink)) {
+//             await instrumentsTrackingDoc.update({'image_url2': newImageLink});
+//             await sendCustomNotification("Webb Mode Commissioning Tracker", "A new mode for the James Webb Space Telescope has been commissioned", "new_deployment_step")
+//             functions.logger.log("Sending notification: Updated instruments tracking image link: ", newImageLink);
+//         } else {
+//             functions.logger.error(newImageLink, " is invalid")
+//         }
+//     }
+//     await browser.close();
+// });
 
 
 exports.getCurrentDeploymentStepIndex = functions.https.onCall(async (data, context) => {
@@ -149,13 +152,13 @@ exports.getAllDeploymentSteps = functions.https.onCall(async (data, context) => 
 
     // Quick usability fix: Update current step oneliner with a hint to tap for more information
     const currentStep = await getCurrentDeploymentStep();
-    stepsJson[currentStep]['oneliner'] += " (Tap for more info)";
+    if (stepsJson[currentStep]['oneliner'] !== null) {
+        stepsJson[currentStep]['oneliner'] += " (Tap for more info)";
+    }
     return stepsJson;
 });
 
-
-// TODO: Check if a new step has been added by NASA, add it to the Firestore (and send a notification)
-exports.checkNewStepAdded = functions.runWith({memory: "1GB"}).pubsub.schedule('every 60 minutes').onRun(async (context) => {
+async function callCheckNewStepAdded() {
     const stepIds = await scrapeAllStepIds();
     const newStepId = stepIds[stepIds.length - 1];
 
@@ -178,7 +181,7 @@ exports.checkNewStepAdded = functions.runWith({memory: "1GB"}).pubsub.schedule('
             description: newStep.description,
             oneliner: newStep.oneliner,
             video_url: "",
-            status: "future",
+            status: newStep.status,
             image_url: newStep.thumbnailImageLink,
             image_url2: newStep.imageLink,
             youtube_url: "",
@@ -190,6 +193,14 @@ exports.checkNewStepAdded = functions.runWith({memory: "1GB"}).pubsub.schedule('
         functions.logger.log("New step added: ", newStepId);
         await sendCustomNotification(newStep.title, "A new step has been added to the James Webb Space Telescope", "new_deployment_step");
     }
+}
+
+// TODO: Check if a new step has been added by NASA, add it to the Firestore (and send a notification)
+exports.checkNewStepAdded = functions.runWith({
+    timeoutSeconds: 540,
+    memory: "1GB"
+}).pubsub.schedule('every 40 minutes').onRun(async (context) => {
+    await callCheckNewStepAdded();
 });
 
 
@@ -200,15 +211,58 @@ async function scrapeStepDescription(textInfoBox) {
     description = description.split("VIDEO:")[0]
     description = description.split("IMAGE:")[0]
     description = description.split("READ:")[0]
+    description = description.split("VIEW:")[0]
     description = description.split("LISTEN:")[0]
     description = description.split("TRACK:")[0]
     description = description.split("Photos:")[0]
     description = description.split("Coverage Replays:")[0]
     description = description.split("Coverage Replay:")[0]
     description = description.split("TEST IMAGE:")[0]
+    description = description.split("DOWNLOAD:")[0]
+    description = description.split("MORE DETAIL:")[0]
     description = description.trim()
 
     return description;
+}
+
+exports.checkStatus = functions.runWith({memory: "1GB"}).pubsub.schedule('every 30 minutes').onRun(async (context) => {
+    const currentStep = await getCurrentDeploymentStep();
+    await scrapeStatus(currentStep);
+});
+
+async function scrapeStatusFromTextInfoBox(textInfoBox, page) {
+    const statusLink = await textInfoBox.$('p.status a');
+    let status = await page.evaluate(element => element.innerText, statusLink);
+    status = status.toLowerCase();
+    // Failsafe
+    if (status !== "in progress" && status !== "future" && status !== "completed") {
+        status = "in progress";
+    }
+    return status;
+}
+
+async function scrapeStatus(stepId) {
+    const browser = await puppeteer.launch({});
+    const page = await browser.newPage();
+    const url = stepExplorerURL + '#' + (stepId + 1);
+    await page.goto(url);
+
+    // Parent element
+    const textInfoBox = await page.waitForSelector('header.dataInfo');
+    const status = scrapeStatusFromTextInfoBox(textInfoBox, page);
+
+    // Save to firestore
+    const stepDoc = admin.firestore().collection('steps').doc(stepId.toString());
+    const snapshot = await stepDoc.get();
+    if (snapshot.data()["status"] !== status) {
+        await stepDoc.update({'status': status});
+        functions.logger.log("Sending notification: Updated step status: ", status);
+        const stepName = snapshot.data()["name"];
+        const title = stepName + ": " + status.toUpperCase();
+        await sendCustomNotification(title, "A step of the James Webb Space Telescope has been updated", "new_deployment_step_test")
+    }
+
+    await browser.close();
 }
 
 
@@ -235,6 +289,9 @@ async function scrapeStep(stepId) {
     const oneliner = await textInfoBox.$$eval('p.oneLiner', e => e[0].innerText);
     const description = await scrapeStepDescription(textInfoBox);
 
+    const status = scrapeStatusFromTextInfoBox(textInfoBox, page);
+    functions.logger.log("Step " + stepId + " status: ", status);
+
     await browser.close();
 
     return {
@@ -242,7 +299,8 @@ async function scrapeStep(stepId) {
         imageLink: imageLink,
         title: title,
         oneliner: oneliner,
-        description: description
+        description: description,
+        status: status
     }
 
 }
